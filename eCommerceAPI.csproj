@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Core\" />
-    <Folder Include="Infrastructure\" />
     <Folder Include="Presentation\" />
     <Folder Include="Presentation\eCommerceAPI.WebAPI\Controllers\" />
   </ItemGroup>
