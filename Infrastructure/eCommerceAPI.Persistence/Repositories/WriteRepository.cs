@@ -52,10 +52,9 @@ namespace eCommerceAPI.Persistence.Repositories
             return true;
         }
 
-        public async Task<bool> SaveAsync()
+        public async Task<int> SaveChangesAsync()
         {
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return await _dbContext.SaveChangesAsync();
         }
 
         public bool Update(T model)
