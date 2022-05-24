@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using eCommerceAPI.Persistence;
+using eCommerceAPI.Application.Repositories;
+using eCommerceAPI.Persistence.Repositories;
 
 namespace eCommerceAPI.Infrastructure.eCommerceAPI.Persistence
 {
@@ -13,6 +15,15 @@ namespace eCommerceAPI.Infrastructure.eCommerceAPI.Persistence
             {
                 opt.UseNpgsql(Configuration.ConnectionStringDockerPg);
             });
+
+            services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
+            services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
+
+            services.AddScoped<IOrderReadRepository, OrderReadRepository>();
+            services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
+
+            services.AddScoped<IProductReadRepository, ProductReadRepository>();
+            services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
         }
     }
 }
