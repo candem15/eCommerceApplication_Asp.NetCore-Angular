@@ -1,7 +1,7 @@
-<ul>
-  <li><a routerLink="/admin">Dashboard</a></li>
-  <li><a routerLink="customers">Customers</a></li>
-  <li><a routerLink="orders">Orders</a></li>
-  <li><a routerLink="products">Products</a></li>
-  <li><a routerLink="">Switch to UI</a></li>
-</ul>
+<mat-selection-list [multiple]="false">
+  <mat-list-option id="sidebar-menu" routerLink="/admin">Dashboard</mat-list-option>
+  <mat-list-option id="sidebar-menu" routerLink="customers">Customers</mat-list-option>
+  <mat-list-option id="sidebar-menu" routerLink="orders">Orders</mat-list-option>
+  <mat-list-option id="sidebar-menu" routerLink="products">Products</mat-list-option>
+  <mat-list-option id="sidebar-menu" routerLink="">Switch to UI</mat-list-option>
+</mat-selection-list>
