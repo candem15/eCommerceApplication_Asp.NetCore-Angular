@@ -11,7 +11,7 @@ export class LayoutComponent implements OnInit {
   constructor(private aletify: AlertifyService) { }
 
   ngOnInit(): void {
-    this.aletify.notification("Anan envanterde", MessageType.Warning);
+    this.aletify.notification("test", MessageType.Warning);
   }
 
 }

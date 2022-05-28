@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CustomToastrService, MessageType, ToastrPosition } from './services/ui/CustomToastr.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'eCommerceClient';
+  constructor(private toastr: CustomToastrService) {
+    toastr.notification("tebrikler", "100 aldın!", MessageType.Info,ToastrPosition.TopLeft);
+  }
 }
