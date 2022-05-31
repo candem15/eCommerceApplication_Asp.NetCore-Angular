@@ -9,7 +9,7 @@ export class AlertifyService {
   constructor() { }
 
   notification(message: string, messageType: MessageType, position: Position = Position.BottomRight, delay: number = 3) {
-    alertify.set('notifier', 'position', delay);
+    alertify.set('notifier', 'delay', delay);
     alertify.set('notifier', 'position', position);
     alertify[messageType](message);
   }

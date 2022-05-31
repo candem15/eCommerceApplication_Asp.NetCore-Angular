@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.input-margin{
+  margin-left: 5px;
+  margin-right:5px;
+}
+
+.create-product-btn{
+  align-self: center;
+}

@@ -36,9 +36,9 @@ export class ProductsComponent extends BaseComponent implements OnInit {
       Name: "pro69",
       Stock: 69,
       Price: 31
-    }).subscribe(data => console.log(data));*/
+    }).subscribe(data => console.log(data));
 
-   /* this.httpClientService.delete({
+    this.httpClientService.delete({
       controller: "products"
     }, "7d019f20-fc6d-4450-92cd-f0140bb61470").subscribe();*/
 
