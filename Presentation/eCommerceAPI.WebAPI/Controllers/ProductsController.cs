@@ -1,4 +1,5 @@
 ﻿using eCommerceAPI.Application.Repositories;
+using eCommerceAPI.Application.RequestParameters.Pagination;
 using eCommerceAPI.Application.ViewModels.Products;
 using eCommerceAPI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,9 +21,17 @@ namespace eCommerceAPI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
-            return Ok(_productReadRepository.GetAll(false));
+            var totalProductsCount = _productReadRepository.GetAll(false).Count();
+            var products = _productReadRepository.GetAll(false).Skip(pagination.Page * pagination.Size).Take(pagination.Size);
+
+            return Ok(
+                new
+                {
+                    totalProductsCount,
+                    products
+                });
         }
 
         [HttpPost]
