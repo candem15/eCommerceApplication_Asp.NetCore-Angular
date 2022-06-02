@@ -7,6 +7,8 @@ import { ListProducts } from 'src/app/contracts/product/list-products';
 import { AlertifyService, MessageType, Position } from 'src/app/services/admin/alertify.service';
 import { ProductService } from 'src/app/services/common/models/product.service';
 
+declare var $: any;
+
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
@@ -18,7 +20,7 @@ export class ListComponent extends BaseComponent implements OnInit {
     super(spinner);
   }
 
-  displayedColumns: string[] = ['name', 'stock', 'price', 'createdDate', 'updatedDate'];
+  displayedColumns: string[] = ['name', 'stock', 'price', 'createdDate', 'updatedDate', 'editProduct', 'deleteProduct'];
   dataSource: MatTableDataSource<ListProducts> = null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

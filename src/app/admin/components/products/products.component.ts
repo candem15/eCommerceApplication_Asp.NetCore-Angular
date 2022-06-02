@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { delay } from 'rxjs';
 import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
 import { CreateProduct } from 'src/app/contracts/product/create-product';
 import { HttpClientService } from 'src/app/services/common/http-client.service';
@@ -24,28 +25,5 @@ export class ProductsComponent extends BaseComponent implements OnInit {
 
   ngOnInit(): void {
     this.showSpinner(SpinnerType.SquareLoader);
-
-
-    /*this.httpClientService.post({
-      controller: "products"
-    }, {
-      Name: "pro2",
-      Stock: 50,
-      Price: 25
-    }).subscribe(data => console.log(data));*/
-
-    /*this.httpClientService.put({
-      controller: "products"
-    }, {
-      Id: "a607c613-8cb3-478a-bf17-b27c16b284e7",
-      Name: "pro69",
-      Stock: 69,
-      Price: 31
-    }).subscribe(data => console.log(data));
-
-    this.httpClientService.delete({
-      controller: "products"
-    }, "7d019f20-fc6d-4450-92cd-f0140bb61470").subscribe();*/
-
   }
 }
