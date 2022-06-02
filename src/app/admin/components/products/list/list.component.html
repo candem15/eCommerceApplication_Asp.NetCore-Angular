@@ -35,7 +35,7 @@
 
     <ng-container matColumnDef="deleteProduct">
       <th mat-header-cell *matHeaderCellDef width="50px"></th>
-      <td [id]="element.id" mat-cell *matCellDef="let element" app-delete (listRefreshCallback)="getProducts()"></td>
+      <td mat-cell *matCellDef="let element" app-delete [id]="element.id" controller="products" (listRefreshCallback)="getProducts()"></td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
