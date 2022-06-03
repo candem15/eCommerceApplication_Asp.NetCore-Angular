@@ -8,12 +8,12 @@ export class CustomToastrService {
 
   constructor(private toastr: ToastrService) { }
 
-  notification(message: string, title: string, messageType: MessageType, position: ToastrPosition) {
+  notification(message: string, title: string, messageType: ToastrMessageType, position: ToastrPosition) {
     this.toastr[messageType](message, title, { positionClass: position });
   }
 }
 
-export enum MessageType {
+export enum ToastrMessageType {
   Error = "error",
   Info = "info",
   Success = "success",

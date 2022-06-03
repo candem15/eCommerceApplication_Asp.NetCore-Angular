@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomToastrService, MessageType, ToastrPosition } from './services/ui/CustomToastr.service';
+import { CustomToastrService, ToastrMessageType, ToastrPosition } from './services/ui/CustomToastr.service';
 const http = new XMLHttpRequest();
 
 @Component({
