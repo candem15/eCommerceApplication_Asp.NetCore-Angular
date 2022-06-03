@@ -29,6 +29,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
+app.UseStaticFiles(); // wwwroot için gerekli
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

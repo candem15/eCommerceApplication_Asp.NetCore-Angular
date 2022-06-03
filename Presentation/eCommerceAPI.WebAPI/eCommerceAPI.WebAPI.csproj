@@ -24,4 +24,8 @@
     <ProjectReference Include="..\..\Infrastructure\eCommerceAPI.Persistence\eCommerceAPI.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
