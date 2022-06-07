@@ -2,10 +2,10 @@ import { Directive, ElementRef, EventEmitter, HostListener, Input, Output, Rende
 import { NgxSpinnerService } from 'ngx-spinner';
 import { SpinnerType } from 'src/app/base/base.component';
 import { HttpClientService } from 'src/app/services/common/http-client.service';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DeleteDialogComponent, DeleteDialogState } from 'src/app/dialogs/delete-dialog/delete-dialog.component';
 import { AlertifyService, MessageType, Position } from 'src/app/services/admin/alertify.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DialogService } from 'src/app/services/dialog.service';
 
 declare var $: any;
 
@@ -19,7 +19,7 @@ export class DeleteDirective {
     private _renderer: Renderer2,
     private httpClientService: HttpClientService,
     private spinner: NgxSpinnerService,
-    public dialog: MatDialog,
+    public dialogService: DialogService,
     private alertify: AlertifyService
   ) {
     const button = _renderer.createElement('MatButton');
@@ -39,38 +39,30 @@ export class DeleteDirective {
 
   @HostListener("click")
   async onClick() {
-    this.openDialog(async () => {
-      this.spinner.show(SpinnerType.SquareLoader);
-      const td: HTMLTableCellElement = this.element.nativeElement;
-      this.httpClientService.delete({
-        controller: this.controller
-      }, this.id).subscribe(data => {
-        $(td.parentElement).addClass("bg-danger").animate({
-          opacity: 0,
-          height: "toggle"
-        }, 2000, () => {
-          this.listRefreshCallback.emit();
-          this.alertify.notification("Deleted successfully!", MessageType.Success, Position.TopRight);
-        });
-      }, (errorResponse: HttpErrorResponse) => {
-        this.spinner.hide(SpinnerType.SquareLoader);
-        this.alertify.notification("An Unexpected error occurred while deleting!", MessageType.Error, Position.TopRight);
+    this.dialogService.openDialog(
+      {
+        componentType: DeleteDirective,
+        data: DeleteDialogState.Yes,
+        afterClosed: async () => {
+          this.spinner.show(SpinnerType.SquareLoader);
+          const td: HTMLTableCellElement = this.element.nativeElement;
+          this.httpClientService.delete({
+            controller: this.controller
+          }, this.id).subscribe(data => {
+            $(td.parentElement).addClass("bg-danger").animate({
+              opacity: 0,
+              height: "toggle"
+            }, 2000, () => {
+              this.listRefreshCallback.emit();
+              this.alertify.notification("Deleted successfully!", MessageType.Success, Position.TopRight);
+            });
+          }, (errorResponse: HttpErrorResponse) => {
+            this.spinner.hide(SpinnerType.SquareLoader);
+            this.alertify.notification("An Unexpected error occurred while deleting!", MessageType.Error, Position.TopRight);
+          });
+        }
       });
-    });
-  }
-
-
-  openDialog(afterClosed: any): void {
-    const dialogRef = this.dialog.open(DeleteDialogComponent, {
-      width: '250px',
-      data: DeleteDialogState.Yes,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result == DeleteDialogState.Yes) {
-        afterClosed();
-      }
-    });
   }
 }
+
 

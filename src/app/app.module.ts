@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AdminModule } from './admin/admin.module';
 
@@ -27,6 +27,8 @@ import { HttpClientModule } from '@angular/common/http';
   providers: [
     { provide: "baseUrl", useValue: "https://localhost:7237/api", multi: true }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA  ]
 })
 export class AppModule { }
