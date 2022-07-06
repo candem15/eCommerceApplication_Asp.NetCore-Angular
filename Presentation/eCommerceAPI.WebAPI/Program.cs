@@ -1,4 +1,5 @@
 using eCommerceAPI.Application.Validators.Products;
+using eCommerceAPI.Infrastructure;
 using eCommerceAPI.Infrastructure.eCommerceAPI.Persistence;
 using eCommerceAPI.Infrastructure.Filters;
 using FluentValidation.AspNetCore;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddPersistenceServices();
+builder.Services.AddInfrastructureServices();
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>());
 
