@@ -62,7 +62,7 @@ namespace eCommerceAPI.Infrastructure.Services
                 string fileNewName = await FileRenameAsync(file.FileName);
 
                 bool result = await CopyFileAsync(Path.Combine(uploadPath, fileNewName), file);
-                datas.Add((fileNewName, Path.Combine(uploadPath, fileNewName)));
+                datas.Add((fileNewName, Path.Combine(path, fileNewName)));
                 results.Add(result);
                 //string fullPath = Path.Combine(uploadPath, Guid.NewGuid() + file.Name);
                 if (results.TrueForAll(x => x.Equals(true)))
