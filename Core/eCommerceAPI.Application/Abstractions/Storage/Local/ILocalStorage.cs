@@ -5,11 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace eCommerceAPI.Application.Services
+namespace eCommerceAPI.Application.Abstractions.Storage.Local
 {
-    public interface IFileService
+    public interface ILocalStorage : IStorage
     {
-        Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files);
         Task<bool> CopyFileAsync(string path, IFormFile formFile);
     }
 }

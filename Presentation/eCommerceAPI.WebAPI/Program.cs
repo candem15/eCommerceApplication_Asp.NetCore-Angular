@@ -2,6 +2,8 @@ using eCommerceAPI.Application.Validators.Products;
 using eCommerceAPI.Infrastructure;
 using eCommerceAPI.Infrastructure.eCommerceAPI.Persistence;
 using eCommerceAPI.Infrastructure.Filters;
+using eCommerceAPI.Infrastructure.Services.Storage.Azure;
+using eCommerceAPI.Infrastructure.Services.Storage.Local;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
+//builder.Services.AddStorage<AzureStorage>();
+builder.Services.AddStorage<LocalStorage>();
+
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateProductValidator>());
 

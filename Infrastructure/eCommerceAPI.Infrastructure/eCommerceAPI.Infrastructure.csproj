@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\Core\eCommerceAPI.Application\eCommerceAPI.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.0" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,6 @@
-﻿using eCommerceAPI.Application.Repositories;
+﻿using eCommerceAPI.Application.Abstractions.Storage;
+using eCommerceAPI.Application.Repositories;
 using eCommerceAPI.Application.RequestParameters.Pagination;
-using eCommerceAPI.Application.Services;
 using eCommerceAPI.Application.ViewModels.Products;
 using eCommerceAPI.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -16,14 +16,18 @@ namespace eCommerceAPI.WebAPI.Controllers
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
         private readonly IWebHostEnvironment _webHostEnviroment; // Api üzerindeki enviroment üzerindeki static fileslara kadar erişebilmemizi sağlayan bir servistir.
-        private readonly IFileService _fileService;
+        private readonly IStorageService _storageService;
+        private readonly IProductImageFileReadRepository _productImageFileReadRepository;
+        private readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
 
-        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IWebHostEnvironment webHostEnviroment, IFileService fileService)
+        public ProductsController(IProductWriteRepository productWriteRepository, IProductReadRepository productReadRepository, IWebHostEnvironment webHostEnviroment, IStorageService storageService, IProductImageFileReadRepository productImageFileReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository)
         {
             _productWriteRepository = productWriteRepository;
             _productReadRepository = productReadRepository;
             _webHostEnviroment = webHostEnviroment;
-            _fileService = fileService;
+            _storageService = storageService;
+            _productImageFileReadRepository = productImageFileReadRepository;
+            _productImageFileWriteRepository = productImageFileWriteRepository;
         }
 
         [HttpGet]
@@ -82,7 +86,14 @@ namespace eCommerceAPI.WebAPI.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            await _fileService.UploadAsync("product-images", Request.Form.Files);
+            var datas = await _storageService.UploadAsync("files", Request.Form.Files);
+            await _productImageFileWriteRepository.AddRangeAsync(datas.Select(x => new ProductImageFile()
+            {
+                FileName=x.fileName,
+                Path = x.pathOrContainerName,
+                Storage = _storageService.StorageName
+            }).ToList());
+            await _productImageFileWriteRepository.SaveChangesAsync();
             return Ok();
         }
     }
