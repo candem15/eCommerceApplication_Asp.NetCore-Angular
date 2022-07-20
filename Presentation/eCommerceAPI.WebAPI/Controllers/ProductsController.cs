@@ -5,6 +5,7 @@ using eCommerceAPI.Application.ViewModels.Products;
 using eCommerceAPI.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace eCommerceAPI.WebAPI.Controllers
@@ -84,16 +85,40 @@ namespace eCommerceAPI.WebAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> Upload(string productId)
         {
-            var datas = await _storageService.UploadAsync("files", Request.Form.Files);
+            var datas = await _storageService.UploadAsync("product-images", Request.Form.Files);
+            Product product = await _productReadRepository.GetByIdAsync(productId);
             await _productImageFileWriteRepository.AddRangeAsync(datas.Select(x => new ProductImageFile()
             {
-                FileName=x.fileName,
+                FileName = x.fileName,
                 Path = x.pathOrContainerName,
-                Storage = _storageService.StorageName
+                Storage = _storageService.StorageName,
+                Products = new List<Product>() { product }
             }).ToList());
             await _productImageFileWriteRepository.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetImages(string id)
+        {
+            Product? product = await _productReadRepository.Table.Include(x => x.ProductImageFiles)
+                .FirstOrDefaultAsync(x => x.Id == Guid.Parse(id));
+
+            return Ok(product.ProductImageFiles.Select(x => new
+            {
+                x.FileName,
+                x.Path,
+                x.Id
+            }));
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public async Task<IActionResult> DeleteImage(string id)
+        {
+            await _productImageFileWriteRepository.RemoveAsync(id);
+            await _productWriteRepository.SaveChangesAsync();
             return Ok();
         }
     }

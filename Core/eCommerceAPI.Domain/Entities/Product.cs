@@ -13,5 +13,6 @@ namespace eCommerceAPI.Domain.Entities
         public int Stock { get; set; }
         public double Price { get; set; }
         public ICollection<Order> Orders { get; set; }
+        public ICollection<ProductImageFile> ProductImageFiles { get; set; }
     }
 }

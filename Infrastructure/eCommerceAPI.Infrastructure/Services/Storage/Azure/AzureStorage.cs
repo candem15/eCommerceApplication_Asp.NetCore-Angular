@@ -15,10 +15,12 @@ namespace eCommerceAPI.Infrastructure.Services.Storage.Azure
     public class AzureStorage : Storage, IAzureStorage
     {
         private readonly BlobServiceClient _blobServiceClient;
+        private readonly IConfiguration _configuration;
         BlobContainerClient _blobContainerClient;
         public AzureStorage(IConfiguration configuration)
         {
-            _blobServiceClient = new(configuration["Storage:Azure"]);
+            _blobServiceClient = new(configuration.GetSection("Storage")["Azure:ConnectionString"]);
+            _configuration = configuration;
         }
 
         public async Task DeleteAsync(string containerName, string fileName)
@@ -52,7 +54,7 @@ namespace eCommerceAPI.Infrastructure.Services.Storage.Azure
                 string newFileName = await FileRenameAsync(file.FileName);
                 BlobClient blobClient = _blobContainerClient.GetBlobClient(newFileName);
                 await blobClient.UploadAsync(file.OpenReadStream()); // UploadAsync in overloadlarından bir tanesi stream şeklinde dosyaları alması burda onu kullandık.
-                datas.Add((newFileName, containerName));
+                datas.Add((newFileName, $"{_configuration.GetSection("Storage")["Azure:BaseUrl"]}/{containerName}/{newFileName}"));
             }
             return datas;
         }
