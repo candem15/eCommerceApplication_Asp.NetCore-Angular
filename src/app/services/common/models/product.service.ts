@@ -1,16 +1,18 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { firstValueFrom, Observable } from "rxjs";
+import { catchError, firstValueFrom, map, Observable } from "rxjs";
 import { CreateProduct } from "src/app/contracts/product/create-product";
 import { ListProducts } from "src/app/contracts/product/list-products";
+import { ListProductImage } from "src/app/contracts/product/list-product-image";
 import { HttpClientService } from "../http-client.service";
+import { AlertifyService, MessageType, Position } from "../../admin/alertify.service";
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class ProductService {
-  constructor(private httpClientService: HttpClientService) { }
+  constructor(private httpClientService: HttpClientService, private alertifyService: AlertifyService) { }
 
   create(product: CreateProduct, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
     this.httpClientService.post({
@@ -52,6 +54,22 @@ export class ProductService {
     const deleteObservable: Observable<any> = this.httpClientService.delete({
       controller: "products"
     }, id);
-    await firstValueFrom(deleteObservable);
+    return await firstValueFrom(deleteObservable);
+  }
+
+  async deleteImage(id: string) {
+    const deleteObservable: Observable<any> = this.httpClientService.delete({
+      controller: "products",
+      action: "DeleteImage"
+    }, id);
+    return await firstValueFrom(deleteObservable);
+  }
+
+  async readImages(id: string): Promise<ListProductImage[]> {
+    const observableData: Observable<ListProductImage[]> = this.httpClientService.get<ListProductImage[]>({
+      action: "getimages",
+      controller: "products",
+    }, id)
+    return await firstValueFrom(observableData);
   }
 }
