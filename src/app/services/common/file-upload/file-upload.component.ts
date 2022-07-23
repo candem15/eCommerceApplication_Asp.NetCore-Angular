@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -9,6 +9,9 @@ import { AlertifyService, MessageType, Position } from '../../admin/alertify.ser
 import { DialogService } from '../../dialog.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../../ui/CustomToastr.service';
 import { HttpClientService } from '../http-client.service';
+import { ProductService } from '../models/product.service';
+
+declare var $: any
 
 @Component({
   selector: 'app-file-upload',
@@ -22,8 +25,10 @@ export class FileUploadComponent {
     private customToastrService: CustomToastrService,
     private dialog: MatDialog,
     private dialogService: DialogService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private productService:ProductService
   ) { }
+
 
   public files: NgxFileDropEntry[];
 

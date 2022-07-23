@@ -1,6 +1,7 @@
-import { Component, ElementRef, Inject, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { ListProductImage } from 'src/app/contracts/product/list-product-image';
 import { AlertifyService, MessageType, Position } from 'src/app/services/admin/alertify.service';
 import { FileUploadOptions } from 'src/app/services/common/file-upload/file-upload.component';
@@ -27,12 +28,19 @@ export class SelectProductImagesDialogComponent extends BaseDialog<SelectProduct
     super(dialogRef)
   }
 
+  refreshImages$ = new BehaviorSubject<boolean>(true);
+
   @ViewChildren("cardElement", { read: ElementRef }) imageCardList: QueryList<ElementRef>;
 
   baseUrl = "http://127.0.0.1:8887/";
-  productImages: ListProductImage[];
+  productImages: Observable<ListProductImage[]>;
+
   async ngOnInit() {
-    this.productImages = await this.productService.readImages(this.data as string);
+    this.productImages = await this.refreshImages$.pipe(switchMap((_) => this.productService.readImages(this.data as string)));
+  }
+
+  async refreshImages() {
+    this.refreshImages$.next(true);
   }
 
   async deleteImage(id: string, cardIndex: any) {
@@ -50,7 +58,6 @@ export class SelectProductImagesDialogComponent extends BaseDialog<SelectProduct
         });
       }
     });
-
   }
 
   @Output() options: Partial<FileUploadOptions> = {

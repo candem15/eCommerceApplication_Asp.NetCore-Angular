@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
 import { ListProducts } from 'src/app/contracts/product/list-products';
+import { EditProductDialogComponent } from 'src/app/dialogs/edit-product-dialog/edit-product-dialog.component';
 import { SelectProductImagesDialogComponent } from 'src/app/dialogs/select-product-images-dialog/select-product-images-dialog.component';
 import { AlertifyService, MessageType, Position } from 'src/app/services/admin/alertify.service';
 import { ProductService } from 'src/app/services/common/models/product.service';
@@ -48,7 +49,17 @@ export class ListComponent extends BaseComponent implements OnInit {
       componentType: SelectProductImagesDialogComponent,
       data: id,
       options: {
-        width: "1000px"
+        width: "1150px"
+      }
+    })
+  }
+
+  editProduct(id: string, name:string,stock:number,price:number) {
+    this.dialogService.openDialog({
+      componentType: EditProductDialogComponent,
+      data: {id,name,stock,price},
+      options: {
+        width: "700px"
       }
     })
   }

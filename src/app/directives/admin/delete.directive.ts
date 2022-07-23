@@ -41,7 +41,7 @@ export class DeleteDirective {
   async onClick() {
     this.dialogService.openDialog(
       {
-        componentType: DeleteDirective,
+        componentType: DeleteDialogComponent,
         data: DeleteDialogState.Yes,
         afterClosed: async () => {
           this.spinner.show(SpinnerType.SquareLoader);

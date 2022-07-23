@@ -8,13 +8,20 @@ import { SelectProductImagesDialogComponent } from './select-product-images-dial
 import { FileUploadModule } from '../services/common/file-upload/file-upload.module';
 import {MatCardModule} from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
+import { EditProductDialogComponent } from './edit-product-dialog/edit-product-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
 
 
 
 @NgModule({
   declarations: [
     DeleteDialogComponent,
-    SelectProductImagesDialogComponent
+    SelectProductImagesDialogComponent,
+    EditProductDialogComponent,
+    EditDialogComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +29,10 @@ import { MatIconModule } from '@angular/material/icon';
     MatButtonModule,
     FileUploadModule,
     MatCardModule,
-    MatIconModule
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule
   ]
 })
 export class DialogModule { }
