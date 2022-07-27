@@ -1,0 +1,163 @@
+<div class="row" id="lr-container">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <div class="lr-title">
+      <h1 style="font-size: 32px; font-family: arial;">Hello,</h1>
+      <h3 style="font-family: arial !important;">Please register or login for enjoy shopping!</h3>
+    </div>
+    <!-- Pills navs -->
+    <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+      <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="tab-login" data-mdb-toggle="pill" (click)="switchTabs('login')" role="tab"
+          aria-controls="pills-login" aria-selected="true">Login</a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="tab-register" data-mdb-toggle="pill" (click)="switchTabs('register')" role="tab"
+          aria-controls="pills-register" aria-selected="false">Register</a>
+      </li>
+    </ul>
+    <!-- Pills navs -->
+
+    <!-- Pills content -->
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+        <form [formGroup]="frmLogin" (ngSubmit)="onLoginSubmit(frmLogin.value)">
+          <div class="text-center mb-3">
+            <p>Sign in with:</p>
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-google"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-twitter"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-github"></i>
+            </button>
+          </div>
+
+          <p class="text-center">or:</p>
+
+          <!-- Email input -->
+          <div class="form-outline mb-5">
+            <input type="email" id="loginName" class="form-control" />
+            <label class="form-label" for="loginName">E-Mail</label>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-4">
+            <input type="password" id="loginPassword" class="form-control" />
+            <label class="form-label" for="loginPassword">Password</label>
+          </div>
+
+          <!-- 2 column grid layout -->
+          <div class="row mb-4">
+
+            <div class="col-md-12 d-flex justify-content-end">
+              <!-- Simple link -->
+              <a href="#!">Forgot password?</a>
+            </div>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+        </form>
+      </div>
+      <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
+        <form [formGroup]="frmRegister" (ngSubmit)="onRegisterSubmit(frmRegister.value)">
+          <div class="text-center mb-3">
+            <p>Sign up with:</p>
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-google"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-twitter"></i>
+            </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-github"></i>
+            </button>
+          </div>
+
+          <p class="text-center">or:</p>
+
+          <!-- Name input -->
+          <div class="form-outline mb-6">
+            <input formControlName="name" type="text" id="registerName" class="form-control"
+              [ngClass]="{'is-invalid': registerSubmitted && componentRegister.name.errors}" />
+            <label class="form-label" for="registerName">Name</label>
+            <small class="form-text invalid-feedback"
+              *ngIf="componentRegister.name.errors?.required && (componentRegister.name.touched || registerSubmitted)">
+              Name field cannot be empty!</small>
+            <small class="form-text invalid-feedback"
+              *ngIf="(componentRegister.name.errors?.minlength || componentRegister.name.errors?.maxlength) && (componentRegister.name.touched || registerSubmitted)">
+              Name must be between 3-50 characters!</small>
+          </div>
+
+          <!-- Username input -->
+          <div class="form-outline mb-6">
+            <input formControlName="username" type="text" id="registerUsername" class="form-control"
+              [ngClass]="{'is-invalid': registerSubmitted && componentRegister.username.errors}" />
+            <label class="form-label" for="registerUsername">Username</label>
+            <small class="form-text invalid-feedback"
+              *ngIf="componentRegister.username.errors?.required && (componentRegister.username.touched || registerSubmitted)">
+              Username field cannot be empty!</small>
+            <small class="form-text invalid-feedback"
+              *ngIf="(componentRegister.username.errors?.minlength || componentRegister.username.errors?.maxlength) && (componentRegister.username.touched || registerSubmitted)">
+              Username must be between 3-50 characters!</small>
+          </div>
+
+          <!-- Email input -->
+          <div class="form-outline mb-6">
+            <input formControlName="email" type="email" id="registerEmail" class="form-control"
+              [ngClass]="{'is-invalid': registerSubmitted && componentRegister.email.errors}" />
+            <label class="form-label" for="registerEmail">E-Mail</label>
+            <small class="form-text invalid-feedback"
+              *ngIf="componentRegister.email.errors?.required && (componentRegister.email.touched || registerSubmitted)">
+              E-Mail field cannot be empty!</small>
+            <small class="form-text invalid-feedback"
+              *ngIf="componentRegister.email.errors?.email && (componentRegister.email.touched|| registerSubmitted)">
+              Please enter valid E-Mail!</small>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-6">
+            <input formControlName="password" type="password" id="registerPassword" class="form-control"
+              [ngClass]="{'is-invalid': registerSubmitted && componentRegister.password.errors}" />
+            <label class="form-label" for="registerPassword">Password</label>
+            <small class="form-text invalid-feedback"
+              *ngIf="componentRegister.password.errors?.required && (componentRegister.password.touched || registerSubmitted)">
+              Password field cannot be empty!</small>
+            <small class="form-text invalid-feedback"
+              *ngIf="(componentRegister.password.errors?.minlength||componentRegister.password.errors?.maxlength) && (componentRegister.password?.touched || registerSubmitted)">
+              Password must be between 6-50 characters!</small>
+            <small class="form-text invalid-feedback" *ngIf="componentRegister.password.errors?.notsame && registerSubmitted">
+              Password and password repeat must be same!</small>
+          </div>
+
+          <!-- Repeat Password input -->
+          <div class="form-outline mb-6">
+            <input formControlName="repeatPassword" type="password" id="registerRepeatPassword" class="form-control" />
+            <label class="form-label" for="registerRepeatPassword">Repeat password</label>
+          </div>
+          <br>
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>
+        </form>
+      </div>
+    </div>
+    <!-- Pills content -->
+  </div>
+  <div class="col-md-4"></div>
+</div>

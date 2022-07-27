@@ -39,12 +39,14 @@
               "./node_modules/ngx-toastr/toastr.css",
               "./node_modules/ngx-spinner/animations/square-loader.css",
               "./node_modules/ngx-spinner/animations/ball-clip-rotate-pulse.css",
-              "./node_modules/ngx-spinner/animations/ball-pulse.css"
+              "./node_modules/ngx-spinner/animations/ball-pulse.css",
+              "node_modules/@fortawesome/fontawesome-free/css/all.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.min.js",
               "node_modules/alertifyjs/build/alertify.min.js",
-              "node_modules/jquery/dist/jquery.min.js"
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@fortawesome/fontawesome-free/js/all.js"
             ]
           },
           "configurations": {
@@ -119,6 +121,5 @@
         }
       }
     }
-  },
-  "defaultProject": "eCommerceClient"
+  }
 }
