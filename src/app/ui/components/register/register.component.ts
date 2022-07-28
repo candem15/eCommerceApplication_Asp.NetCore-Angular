@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
+import { CreateUser } from 'src/app/contracts/user/create_user';
+import { User } from 'src/app/entities/user';
+import { UserService } from 'src/app/services/common/models/user.service';
+import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/services/ui/CustomToastr.service';
 
 declare var $: any;
 
@@ -10,7 +14,7 @@ declare var $: any;
 })
 export class RegisterComponent implements OnInit {
 
-  constructor(private formBuilder: UntypedFormBuilder) { }
+  constructor(private formBuilder: UntypedFormBuilder, private toastrService: CustomToastrService, private userService: UserService) { }
 
   frmLogin: UntypedFormGroup;
   frmRegister: UntypedFormGroup;
@@ -42,7 +46,7 @@ export class RegisterComponent implements OnInit {
           Validators.minLength(6),
           Validators.maxLength(50)
         ]],
-      repeatPassword: ["",
+      passwordConfirm: ["",
         [
           Validators.required
         ]]
@@ -61,11 +65,17 @@ export class RegisterComponent implements OnInit {
     this.loginSubmitted = true;
   }
 
-  onRegisterSubmit(data: any) {
-    var a = this.frmRegister.controls;
-    var b = this.frmRegister;
-    debugger;
+  async onRegisterSubmit(user: User) {
     this.registerSubmitted = true;
+    if (this.frmRegister.invalid)
+      return;
+    const result: CreateUser = await this.userService.create(user);
+    if (result.succeeded) {
+      this.toastrService.notification(result.message, "Success!", ToastrMessageType.Success, ToastrPosition.TopRight)
+    }
+    else {
+      this.toastrService.notification(result.message, "Error!", ToastrMessageType.Error, ToastrPosition.TopRight)
+    }
   }
 
   async switchTabs(tabName: string) {
