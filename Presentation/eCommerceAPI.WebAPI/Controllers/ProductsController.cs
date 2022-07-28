@@ -56,8 +56,8 @@ namespace eCommerceAPI.WebAPI.Controllers
             return Ok(await _mediatR.Send(getProductByIdQueryRequest));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdateProductCommandRequest updateProductCommandRequest)
+        [HttpPut("[action]")]
+        public async Task<IActionResult> EditProduct([FromBody] UpdateProductCommandRequest updateProductCommandRequest)
         {
             await _mediatR.Send(updateProductCommandRequest);
             return Ok();

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using eCommerceAPI.Persistence;
 using eCommerceAPI.Application.Repositories;
 using eCommerceAPI.Persistence.Repositories;
+using eCommerceAPI.Domain.Entities.Identity;
 
 namespace eCommerceAPI.Infrastructure.eCommerceAPI.Persistence
 {
@@ -15,6 +16,15 @@ namespace eCommerceAPI.Infrastructure.eCommerceAPI.Persistence
             {
                 opt.UseNpgsql(Configuration.ConnectionStringDockerPg);
             });
+
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<eCommerceAPIDbContext>();
 
             services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();

@@ -1,10 +1,12 @@
 using eCommerceAPI.Application;
 using eCommerceAPI.Application.Validators.Products;
+using eCommerceAPI.Domain.Entities.Identity;
 using eCommerceAPI.Infrastructure;
 using eCommerceAPI.Infrastructure.eCommerceAPI.Persistence;
 using eCommerceAPI.Infrastructure.Filters;
 using eCommerceAPI.Infrastructure.Services.Storage.Azure;
 using eCommerceAPI.Infrastructure.Services.Storage.Local;
+using eCommerceAPI.Persistence.Contexts;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
