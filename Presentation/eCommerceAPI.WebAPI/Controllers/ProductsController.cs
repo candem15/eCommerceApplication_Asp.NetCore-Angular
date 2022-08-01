@@ -8,6 +8,7 @@ using eCommerceAPI.Application.Features.Queries.Product.GetProductById;
 using eCommerceAPI.Application.Features.Queries.ProductImage.GetProductImages;
 using eCommerceAPI.Application.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -15,6 +16,7 @@ namespace eCommerceAPI.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
         readonly private IProductWriteRepository _productWriteRepository;

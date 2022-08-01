@@ -19,7 +19,7 @@ namespace eCommerceAPI.Application.Features.Commands.AppUser.CreateUser
         {
             Domain.Entities.Identity.AppUser createUser = _mapper.Map<Domain.Entities.Identity.AppUser>(request);
             createUser.Id = Guid.NewGuid().ToString();
-            IdentityResult result = await _userManager.CreateAsync(createUser);
+            IdentityResult result = await _userManager.CreateAsync(createUser,request.Password);
             CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
 
             if (result.Succeeded)
