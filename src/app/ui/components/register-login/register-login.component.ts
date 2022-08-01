@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
 import { CreateUser } from 'src/app/contracts/user/create_user';
+import { LoginUser } from 'src/app/contracts/user/login-user';
 import { User } from 'src/app/entities/user';
 import { UserService } from 'src/app/services/common/models/user.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/services/ui/CustomToastr.service';
@@ -8,13 +11,19 @@ import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/
 declare var $: any;
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  selector: 'app-register-login',
+  templateUrl: './register-login.component.html',
+  styleUrls: ['./register-login.component.scss']
 })
-export class RegisterComponent implements OnInit {
+export class RegisterLoginComponent extends BaseComponent implements OnInit {
 
-  constructor(private formBuilder: UntypedFormBuilder, private toastrService: CustomToastrService, private userService: UserService) { }
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    private toastrService: CustomToastrService,
+    private userService: UserService,
+    spinner: NgxSpinnerService) {
+    super(spinner);
+  }
 
   frmLogin: UntypedFormGroup;
   frmRegister: UntypedFormGroup;
@@ -51,6 +60,10 @@ export class RegisterComponent implements OnInit {
           Validators.required
         ]]
     })
+    this.frmLogin = this.formBuilder.group({
+      usernameOrEmail: [""],
+      password: [""]
+    })
   }
 
   get componentRegister() {
@@ -61,8 +74,10 @@ export class RegisterComponent implements OnInit {
     return this.frmLogin.controls;
   }
 
-  onLoginSubmit(data: any) {
+  async onLoginSubmit(user: LoginUser) {
     this.loginSubmitted = true;
+    this.showSpinner(SpinnerType.BallClipRotatePulse);
+    await this.userService.login(user,()=>this.hideSpinner(SpinnerType.BallClipRotatePulse));
   }
 
   async onRegisterSubmit(user: User) {

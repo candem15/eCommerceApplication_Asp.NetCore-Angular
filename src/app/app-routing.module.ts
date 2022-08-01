@@ -32,8 +32,8 @@ const routes: Routes = [
       (module => module.ProductsModule)
   },
   {
-    path: "register", loadChildren: () => import("./ui/components/register/register.module").then
-      (module => module.RegisterModule)
+    path: "register", loadChildren: () => import("./ui/components/register-login/register-login.module").then
+      (module => module.RegisterLoginModule)
   }
 ];
 
