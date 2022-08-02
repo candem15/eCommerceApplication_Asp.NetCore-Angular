@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
 import { CreateUser } from 'src/app/contracts/user/create_user';
 import { LoginUser } from 'src/app/contracts/user/login-user';
 import { User } from 'src/app/entities/user';
+import { AuthService } from 'src/app/services/common/auth.service';
 import { UserService } from 'src/app/services/common/models/user.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/services/ui/CustomToastr.service';
 
@@ -21,7 +23,10 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     private toastrService: CustomToastrService,
     private userService: UserService,
-    spinner: NgxSpinnerService) {
+    spinner: NgxSpinnerService,
+    private authService: AuthService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router) {
     super(spinner);
   }
 
@@ -77,7 +82,15 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
   async onLoginSubmit(user: LoginUser) {
     this.loginSubmitted = true;
     this.showSpinner(SpinnerType.BallClipRotatePulse);
-    await this.userService.login(user,()=>this.hideSpinner(SpinnerType.BallClipRotatePulse));
+    await this.userService.login(user, () => {
+      this.authService.identityCheck();
+      this.activatedRoute.queryParams.subscribe(params => {
+        const returnUrl: string = params["returnUrl"];
+        if (returnUrl)
+          this.router.navigate([returnUrl]);
+      })
+      this.hideSpinner(SpinnerType.BallClipRotatePulse)
+    });
   }
 
   async onRegisterSubmit(user: User) {
@@ -86,6 +99,7 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
       return;
     const result: CreateUser = await this.userService.create(user);
     if (result.succeeded) {
+      this.router.navigate(["/"]);
       this.toastrService.notification(result.message, "Success!", ToastrMessageType.Success, ToastrPosition.TopRight)
     }
     else {

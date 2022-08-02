@@ -19,10 +19,7 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" routerLink="baskets">Basket</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" routerLink="register">Register</a>
-            </li>
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
                 Dropdown link
@@ -32,10 +29,18 @@
                 <li><a class="dropdown-item" href="#">Another action</a></li>
                 <li><a class="dropdown-item" href="#">Something else here</a></li>
               </ul>
-            </li>
+            </li> -->
           </ul>
         </div>
-        <button class="btn btn-outline-primary" routerLink="admin" type="submit">Admin</button>
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link active" aria-current="page" routerLink="register"
+              *ngIf="!authService.isAuthenticated">Sign
+              In / Register</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" (click)= "signOut()" routerLink="/"
+              *ngIf="authService.isAuthenticated">Sign Out <i class="fas fa-sign-out-alt sign-out"></i></a></li>
+          <li class="nav-item"><button class="btn btn-outline-primary" routerLink="admin" type="submit"
+              *ngIf="authService.isAuthenticated">Admin</button></li>
+        </ul>
       </div>
     </nav>
   </div>
