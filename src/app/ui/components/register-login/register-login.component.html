@@ -25,19 +25,18 @@
           <div class="text-center mb-3">
             <p>Sign in with:</p>
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-facebook-f"></i>
+              <asl-google-signin-button></asl-google-signin-button>
+            </button>
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-google"></i>
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-twitter"></i>
-            </button>
-
-            <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-github"></i>
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
           </div>
 
@@ -74,19 +73,19 @@
           <div class="text-center mb-3">
             <p>Sign up with:</p>
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-facebook-f"></i>
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-google"></i>
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-twitter"></i>
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
-              <i class="fab fa-github"></i>
+              <asl-google-signin-button></asl-google-signin-button>
             </button>
           </div>
 
@@ -142,13 +141,15 @@
             <small class="form-text invalid-feedback"
               *ngIf="(componentRegister.password.errors?.minlength||componentRegister.password.errors?.maxlength) && (componentRegister.password?.touched || registerSubmitted)">
               Password must be between 6-50 characters!</small>
-            <small class="form-text invalid-feedback" *ngIf="componentRegister.password.errors?.notsame && registerSubmitted">
+            <small class="form-text invalid-feedback"
+              *ngIf="componentRegister.password.errors?.notsame && registerSubmitted">
               Password and password repeat must be same!</small>
           </div>
 
           <!-- Password Confirm input -->
           <div class="form-outline mb-6">
-            <input formControlName="passwordConfirm" type="password" id="registerPasswordConfirm" class="form-control" />
+            <input formControlName="passwordConfirm" type="password" id="registerPasswordConfirm"
+              class="form-control" />
             <label class="form-label" for="registerPasswordConfirm">Password confirm</label>
           </div>
           <br>
