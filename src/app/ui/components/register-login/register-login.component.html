@@ -23,24 +23,25 @@
       <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
         <form [formGroup]="frmLogin" (ngSubmit)="onLoginSubmit(frmLogin.value)">
           <div class="text-center mb-3">
-            <p>Sign in with:</p>
-            <button type="button" class="btn btn-link btn-floating mx-1">
-              <asl-google-signin-button></asl-google-signin-button>
-            </button>
-            <button type="button" class="btn btn-link btn-floating mx-1">
-              <asl-google-signin-button></asl-google-signin-button>
-            </button>
-
-            <button type="button" class="btn btn-link btn-floating mx-1">
+            <p>Sign in to eCommerce with</p>
+            <asl-google-signin-button type="standard" size="medium" class="btn btn-link">
+            </asl-google-signin-button>
+            <br>
+            <div class="fb-login-button" data-size="medium" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" (click)="facebookLogin()"></div>
+            <!-- <button type="button" class="btn btn-link btn-floating mx-1">
               <asl-google-signin-button></asl-google-signin-button>
             </button>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
               <asl-google-signin-button></asl-google-signin-button>
             </button>
+
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <asl-google-signin-button></asl-google-signin-button>
+            </button> -->
           </div>
 
-          <p class="text-center">or:</p>
+            <p class="text-center divider">or</p>
 
           <!-- Email input -->
           <div class="form-outline mb-5">
@@ -71,8 +72,8 @@
       <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
         <form [formGroup]="frmRegister" (ngSubmit)="onRegisterSubmit(frmRegister.value)">
           <div class="text-center mb-3">
-            <p>Sign up with:</p>
-            <button type="button" class="btn btn-link btn-floating mx-1">
+            <p>Sign up to eCommerce with</p>
+            <!-- <button type="button" class="btn btn-link btn-floating mx-1">
               <asl-google-signin-button></asl-google-signin-button>
             </button>
 
@@ -86,10 +87,10 @@
 
             <button type="button" class="btn btn-link btn-floating mx-1">
               <asl-google-signin-button></asl-google-signin-button>
-            </button>
+            </button> -->
           </div>
 
-          <p class="text-center">or:</p>
+          <p class="text-center divider">or</p>
 
           <!-- Name input -->
           <div class="form-outline mb-6">

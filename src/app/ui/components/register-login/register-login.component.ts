@@ -1,4 +1,4 @@
-import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,8 +30,21 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
     private router: Router,
     private socialAuthService: SocialAuthService) {
     super(spinner);
-    this.socialAuthService.authState.subscribe((user: SocialUser) => {
+    socialAuthService.authState.subscribe(async (user: SocialUser) => {
       console.log(user)
+      this.showSpinner(SpinnerType.BallPulse)
+
+      switch (user.provider) {
+        case "GOOGLE":
+          await this.userService.googleLogin(user, () => { })
+          break;
+        case "FACEBOOK":
+          await this.userService.facebookLogin(user, () => { })
+          break;
+      }
+
+      this.authService.identityCheck();
+      this.hideSpinner(SpinnerType.BallPulse);
     });
   }
 
@@ -110,6 +123,10 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
     else {
       this.toastrService.notification(result.message, "Error!", ToastrMessageType.Error, ToastrPosition.TopRight)
     }
+  }
+
+  facebookLogin() {
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID)
   }
 
   async switchTabs(tabName: string) {
