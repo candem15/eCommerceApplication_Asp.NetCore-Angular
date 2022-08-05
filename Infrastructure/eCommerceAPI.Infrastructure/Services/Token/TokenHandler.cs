@@ -30,6 +30,7 @@ namespace eCommerceAPI.Infrastructure.Services.Token
                 audience: _configuration["Token:Audience"],
                 issuer: _configuration["Token:Issuer"],
                 expires: token.Expiration,
+                notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredentials
                 );
 

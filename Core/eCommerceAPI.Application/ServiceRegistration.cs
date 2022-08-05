@@ -9,6 +9,7 @@ namespace eCommerceAPI.Application
         {
             services.AddMediatR(typeof(ServiceRegistration));
             services.AddAutoMapper(typeof(ServiceRegistration));
+            services.AddHttpClient();
         }
     }
 }
