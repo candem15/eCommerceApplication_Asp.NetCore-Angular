@@ -5,6 +5,8 @@ using eCommerceAPI.Persistence;
 using eCommerceAPI.Application.Repositories;
 using eCommerceAPI.Persistence.Repositories;
 using eCommerceAPI.Domain.Entities.Identity;
+using eCommerceAPI.Application.Abstractions.Services;
+using eCommerceAPI.Persistence.Services;
 
 namespace eCommerceAPI.Infrastructure.eCommerceAPI.Persistence
 {
@@ -43,6 +45,9 @@ namespace eCommerceAPI.Infrastructure.eCommerceAPI.Persistence
 
             services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
         }
     }
 }

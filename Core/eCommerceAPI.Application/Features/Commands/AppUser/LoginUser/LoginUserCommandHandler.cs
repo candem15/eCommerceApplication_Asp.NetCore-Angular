@@ -1,46 +1,24 @@
-﻿using eCommerceAPI.Application.Abstractions.Token;
-using eCommerceAPI.Application.Dtos;
-using eCommerceAPI.Application.Exceptions;
+﻿using AutoMapper;
+using eCommerceAPI.Application.Abstractions.Services;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eCommerceAPI.Application.Features.Commands.AppUser.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _manager;
-        readonly SignInManager<Domain.Entities.Identity.AppUser> _signInManager;
-        readonly ITokenHandler _tokenHandler;
+        readonly IAuthService _authService;
+        readonly IMapper _mapper;
 
-        public LoginUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> manager, SignInManager<Domain.Entities.Identity.AppUser> signInManager, ITokenHandler tokenHandler)
+        public LoginUserCommandHandler(IAuthService authService, IMapper mapper)
         {
-            _manager = manager;
-            _signInManager = signInManager;
-            _tokenHandler = tokenHandler;
+            _authService = authService;
+            _mapper = mapper;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            Domain.Entities.Identity.AppUser user = await _manager.FindByNameAsync(request.UsernameOrEmail);
-            if (user == null)
-                user = await _manager.FindByEmailAsync(request.UsernameOrEmail);
-            if (user == null)
-                throw new NotFoundUserException();
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
-            if (result.Succeeded)
-            {
-                Token token = _tokenHandler.CreateAccessToken(3);
-
-                return new LoginUserCommandResponse() { Token = token };
-            }
-
-            throw new AuthenticationFailedException();
+            var token = await _authService.LoginAsync(request.UsernameOrEmail, request.Password);
+            return _mapper.Map<LoginUserCommandResponse>(token);
         }
     }
 }

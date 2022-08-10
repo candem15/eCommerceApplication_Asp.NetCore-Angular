@@ -1,71 +1,25 @@
-﻿using eCommerceAPI.Application.Abstractions.Token;
-using eCommerceAPI.Application.Dtos;
-using eCommerceAPI.Application.Exceptions;
-using Google.Apis.Auth;
+﻿using AutoMapper;
+using eCommerceAPI.Application.Abstractions.Services;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace eCommerceAPI.Application.Features.Commands.AppUser.GoogleLogin
 {
     public class GoogleLoginCommandHandler : IRequestHandler<GoogleLoginCommandRequest, GoogleLoginCommandResponse>
     {
-        private readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        private readonly ITokenHandler _tokenHandler;
+        private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public GoogleLoginCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager, ITokenHandler tokenHandler)
+        public GoogleLoginCommandHandler(IAuthService authService, IMapper mapper)
         {
-            _userManager = userManager;
-            _tokenHandler = tokenHandler;
+            _authService = authService;
+            _mapper = mapper;
         }
 
         public async Task<GoogleLoginCommandResponse> Handle(GoogleLoginCommandRequest request, CancellationToken cancellationToken)
         {
-            var settings = new GoogleJsonWebSignature.ValidationSettings()
-            {
-                Audience = new List<string> { "864076638180-6ph1s0qgh6e5hh6kgj9ngj5epu74oc4t.apps.googleusercontent.com" }
-            };
+            var token = await _authService.GoogleLoginAsync(request.IdToken, request.Provider);
 
-            var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings);
-
-            var info = new UserLoginInfo(request.Provider, payload.Subject, request.Provider);
-
-            Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-
-            bool result = user != null;
-
-            if (user == null)
-            {
-                user = await _userManager.FindByEmailAsync(payload.Email);
-                if (user == null)
-                {
-                    user = new()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Email = payload.Email,
-                        UserName = payload.Email,
-                        Name = payload.Name
-                    };
-                    var identityResult = await _userManager.CreateAsync(user);
-                    result = identityResult.Succeeded;
-                }
-            }
-
-            if (result)
-                await _userManager.AddLoginAsync(user, info);
-            else
-                throw new ExternalLoginFailedException();
-
-            Token token = _tokenHandler.CreateAccessToken(10);
-
-            return new()
-            {
-                Token = token
-            };
+            return _mapper.Map<GoogleLoginCommandResponse>(token);
         }
     }
 }

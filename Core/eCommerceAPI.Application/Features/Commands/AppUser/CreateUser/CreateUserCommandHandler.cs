@@ -2,32 +2,24 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using eCommerceAPI.Application.Exceptions;
+using eCommerceAPI.Application.Abstractions.Services;
 
 namespace eCommerceAPI.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        readonly IUserService _userService;
         readonly IMapper _mapper;
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager, IMapper mapper)
+        public CreateUserCommandHandler(IUserService userService, IMapper mapper)
         {
-            _userManager = userManager;
+            _userService = userService;
             _mapper = mapper;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            Domain.Entities.Identity.AppUser createUser = _mapper.Map<Domain.Entities.Identity.AppUser>(request);
-            createUser.Id = Guid.NewGuid().ToString();
-            IdentityResult result = await _userManager.CreateAsync(createUser,request.Password);
-            CreateUserCommandResponse response = new() { Succeeded = result.Succeeded };
-
-            if (result.Succeeded)
-                response.Message = "User created successfully!";
-            else
-                foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description}\n";
-
+            Application.Dtos.User.CreateUser createUser = _mapper.Map<Application.Dtos.User.CreateUser>(request);
+            CreateUserCommandResponse response = _mapper.Map<CreateUserCommandResponse>(await _userService.CreateAsync(createUser));
             return response;
         }
     }
