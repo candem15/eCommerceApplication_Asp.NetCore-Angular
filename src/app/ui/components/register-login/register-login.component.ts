@@ -1,6 +1,6 @@
-import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser, VKLoginProvider } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators, ValidatorFn } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
@@ -8,6 +8,7 @@ import { CreateUser } from 'src/app/contracts/user/create_user';
 import { LoginUser } from 'src/app/contracts/user/login-user';
 import { User } from 'src/app/entities/user';
 import { AuthService } from 'src/app/services/common/auth.service';
+import { UserAuthService } from 'src/app/services/common/models/user-auth.service';
 import { UserService } from 'src/app/services/common/models/user.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/services/ui/CustomToastr.service';
 
@@ -23,9 +24,10 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
   constructor(
     private formBuilder: UntypedFormBuilder,
     private toastrService: CustomToastrService,
-    private userService: UserService,
+    private userAuthService: UserAuthService,
     spinner: NgxSpinnerService,
     private authService: AuthService,
+    private userService: UserService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private socialAuthService: SocialAuthService) {
@@ -36,15 +38,24 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
 
       switch (user.provider) {
         case "GOOGLE":
-          await this.userService.googleLogin(user, () => { })
+          await this.userAuthService.googleLogin(user, () => {
+            this.authService.identityCheck();
+            this.hideSpinner(SpinnerType.BallPulse);
+          })
           break;
         case "FACEBOOK":
-          await this.userService.facebookLogin(user, () => { })
+          await this.userAuthService.facebookLogin(user, () => {
+            this.authService.identityCheck();
+            this.hideSpinner(SpinnerType.BallPulse);
+          })
+          break;
+        case "VK":
+          await this.userAuthService.vkLogin(user, () => {
+            this.authService.identityCheck();
+            this.hideSpinner(SpinnerType.BallPulse);
+          })
           break;
       }
-
-      this.authService.identityCheck();
-      this.hideSpinner(SpinnerType.BallPulse);
     });
   }
 
@@ -100,7 +111,7 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
   async onLoginSubmit(user: LoginUser) {
     this.loginSubmitted = true;
     this.showSpinner(SpinnerType.BallClipRotatePulse);
-    await this.userService.login(user, () => {
+    await this.userAuthService.login(user, () => {
       this.authService.identityCheck();
       this.activatedRoute.queryParams.subscribe(params => {
         const returnUrl: string = params["returnUrl"];
@@ -125,8 +136,15 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
     }
   }
 
-  facebookLogin() {
+  async facebookLogin() {
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID)
+  }
+
+  async googleLogin() {
+  }
+
+  async vkLogin() {
+    this.socialAuthService.signIn(VKLoginProvider.PROVIDER_ID)
   }
 
   async switchTabs(tabName: string) {

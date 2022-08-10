@@ -27,7 +27,20 @@
             <asl-google-signin-button type="standard" size="medium" class="btn btn-link">
             </asl-google-signin-button>
             <br>
-            <div class="fb-login-button" data-size="medium" data-button-type="continue_with" data-layout="default" data-auto-logout-link="false" data-use-continue-as="false" (click)="facebookLogin()"></div>
+            <div class="col">
+              <a (click)="facebookLogin()" class="fb btn">
+                <i class="fa-brands fa-facebook"></i> Login with Facebook
+              </a>
+              <a class="twitter btn">
+                <i class="fa-brands fa-twitter"></i> Login with Twitter
+              </a>
+              <a (click)="googleLogin()" class="google btn">
+                <i class="fa-brands fa-google"></i> Login with Google
+              </a>
+              <a class="vk btn" (click)="vkLogin()">
+                <i class="fa-brands fa-vk"></i> Login with VK
+              </a>
+            </div>
             <!-- <button type="button" class="btn btn-link btn-floating mx-1">
               <asl-google-signin-button></asl-google-signin-button>
             </button>
@@ -41,7 +54,7 @@
             </button> -->
           </div>
 
-            <p class="text-center divider">or</p>
+          <p class="text-center divider">or</p>
 
           <!-- Email input -->
           <div class="form-outline mb-5">
