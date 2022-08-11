@@ -1,6 +1,7 @@
 ﻿using eCommerceAPI.Application.Features.Commands.AppUser.FacebookLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.GoogleLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.LoginUser;
+using eCommerceAPI.Application.Features.Commands.AppUser.MicrosoftLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.VkLogin;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -42,6 +43,13 @@ namespace eCommerceAPI.WebAPI.Controllers
         public async Task<IActionResult> VkLogin(VkLoginCommandRequest vkLoginCommandRequest)
         {
             VkLoginCommandResponse response = await _mediator.Send(vkLoginCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("microsoft-login")]
+        public async Task<IActionResult> MicrosoftLogin(MicrosoftLoginCommandRequest microsoftLoginCommandRequest)
+        {
+            MicrosoftLoginCommandResponse response = await _mediator.Send(microsoftLoginCommandRequest);
             return Ok(response);
         }
     }

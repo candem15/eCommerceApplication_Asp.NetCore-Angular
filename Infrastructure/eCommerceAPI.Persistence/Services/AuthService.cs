@@ -70,9 +70,10 @@ namespace eCommerceAPI.Persistence.Services
                     await _userManager.AddLoginAsync(user, info);
                 else
                     throw new ExternalLoginFailedException();
+                Token token = _tokenHandler.CreateAccessToken(10);
+                return token;
             }
-            Token token = _tokenHandler.CreateAccessToken(10);
-            return token;
+            throw new ExternalLoginFailedException();
         }
 
         public async Task<Token> GoogleLoginAsync(string idToken, string provider)
@@ -136,6 +137,44 @@ namespace eCommerceAPI.Persistence.Services
             throw new AuthenticationFailedException();
         }
 
+        public async Task<Token> MicrosoftLoginAsync(string authToken, string provider)
+        {
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+            JObject userInfoResponse = JObject.Parse(await _httpClient.GetStringAsync("https://graph.microsoft.com/v1.0/me"));
+            if (userInfoResponse["error"] != null)
+            {
+                throw new ExternalLoginFailedException();
+            }
+            var info = new UserLoginInfo(provider, (string)userInfoResponse["id"], provider);
+            Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+            bool result = user != null;
+
+            if (user == null)
+            {
+                user = await _userManager.FindByEmailAsync(userInfoResponse["userPrincipalName"].ToString());
+                if (user == null)
+                {
+                    user = new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Email = userInfoResponse["userPrincipalName"]?.ToString(),
+                        UserName = userInfoResponse["userPrincipalName"]?.ToString(),
+                        Name = userInfoResponse["displayName"]?.ToString()
+                    };
+                    var identityResult = await _userManager.CreateAsync(user);
+                    result = identityResult.Succeeded;
+                }
+            }
+
+            if (result)
+                await _userManager.AddLoginAsync(user, info);
+            else
+                throw new ExternalLoginFailedException();
+            Token token = _tokenHandler.CreateAccessToken(10);
+            return token;
+        }
+
         public Task TwitterLoginAsync()
         {
             throw new NotImplementedException();
@@ -163,7 +202,7 @@ namespace eCommerceAPI.Persistence.Services
                         Id = Guid.NewGuid().ToString(),
                         Email = $"{id}@ecommerce.com",
                         UserName = $"{id}@ecommerce.com",
-                        Name = infoResponse["first_name"].ToString()+" "+ infoResponse["last_name"]
+                        Name = infoResponse["first_name"].ToString() + " " + infoResponse["last_name"]
                     };
                     var identityResult = await _userManager.CreateAsync(user);
                     result = identityResult.Succeeded;

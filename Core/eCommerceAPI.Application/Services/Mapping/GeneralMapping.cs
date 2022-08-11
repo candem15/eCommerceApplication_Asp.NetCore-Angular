@@ -5,6 +5,7 @@ using eCommerceAPI.Application.Features.Commands.AppUser.CreateUser;
 using eCommerceAPI.Application.Features.Commands.AppUser.FacebookLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.GoogleLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.LoginUser;
+using eCommerceAPI.Application.Features.Commands.AppUser.MicrosoftLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.VkLogin;
 using eCommerceAPI.Application.Features.Queries.Product.GetAllProducts;
 using eCommerceAPI.Application.Features.Queries.Product.GetProductById;
@@ -43,6 +44,10 @@ namespace eCommerceAPI.Application.Services.Mapping
                  .ForMember(dest => dest.Expiration, opt => opt.MapFrom(src => src.Token.Expiration))
                  .ReverseMap();
             CreateMap<LoginUserCommandResponse, Token>()
+                 .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.Token.AccessToken))
+                 .ForMember(dest => dest.Expiration, opt => opt.MapFrom(src => src.Token.Expiration))
+                 .ReverseMap();
+            CreateMap<MicrosoftLoginCommandResponse, Token>()
                  .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.Token.AccessToken))
                  .ForMember(dest => dest.Expiration, opt => opt.MapFrom(src => src.Token.Expiration))
                  .ReverseMap();

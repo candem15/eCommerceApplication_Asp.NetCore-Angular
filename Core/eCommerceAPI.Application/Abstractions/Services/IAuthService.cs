@@ -12,6 +12,7 @@ namespace eCommerceAPI.Application.Abstractions.Services
         Task<Dtos.Token> FacebookLoginAsync(string authToken, string provider);
         Task<Dtos.Token> GoogleLoginAsync(string idToken, string provider);
         Task<Dtos.Token> VkLoginAsync(string authToken, int id, string provider);
+        Task<Dtos.Token> MicrosoftLoginAsync(string authToken, string provider);
         Task TwitterLoginAsync();
     }
 }
