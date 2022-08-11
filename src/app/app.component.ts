@@ -1,3 +1,4 @@
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 import { Component } from '@angular/core';
 import { AuthService } from './services/common/auth.service';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from './services/ui/CustomToastr.service';
@@ -12,12 +13,14 @@ export class AppComponent {
   title = 'eCommerceClient';
   constructor(
     public authService: AuthService,
-    private toastrService: CustomToastrService) {
+    private toastrService: CustomToastrService,
+    public socialAuthService:SocialAuthService) {
     this.authService.identityCheck();
   }
 
   signOut() {
     localStorage.removeItem("accessToken");
+    this.socialAuthService.signOut();
     this.authService.identityCheck();
     this.toastrService.notification(
       "Sign out is successfull.",

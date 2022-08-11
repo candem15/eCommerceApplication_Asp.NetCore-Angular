@@ -1,4 +1,4 @@
-import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser, VKLoginProvider } from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthService, SocialUser, VKLoginProvider } from '@abacritt/angularx-social-login';
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -51,6 +51,12 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
           break;
         case "VK":
           await this.userAuthService.vkLogin(user, () => {
+            this.authService.identityCheck();
+            this.hideSpinner(SpinnerType.BallPulse);
+          })
+          break;
+        case "MICROSOFT":
+          await this.userAuthService.microsoftLogin(user, () => {
             this.authService.identityCheck();
             this.hideSpinner(SpinnerType.BallPulse);
           })
@@ -141,6 +147,10 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
   }
 
   async googleLogin() {
+  }
+
+  async microsoftLogin() {
+    this.socialAuthService.signIn(MicrosoftLoginProvider.PROVIDER_ID)
   }
 
   async vkLogin() {

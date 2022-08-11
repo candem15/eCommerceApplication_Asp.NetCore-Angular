@@ -10,7 +10,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule } from '@auth0/angular-jwt';
 import { RegisterLoginComponent } from './ui/components/register-login/register-login.component';
-import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig, SocialLoginModule, VKLoginProvider } from '@abacritt/angularx-social-login';
+import { FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthServiceConfig, SocialLoginModule, VKLoginProvider } from '@abacritt/angularx-social-login';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
@@ -55,6 +55,10 @@ import { ReactiveFormsModule } from '@angular/forms';
           {
             id: VKLoginProvider.PROVIDER_ID,
             provider: new VKLoginProvider("51398063")
+          },
+          {
+            id: MicrosoftLoginProvider.PROVIDER_ID,
+            provider: new MicrosoftLoginProvider("6248bd08-f760-4a73-ba65-378a82b64741")
           }
         ],
         onError: err => console.log(err)

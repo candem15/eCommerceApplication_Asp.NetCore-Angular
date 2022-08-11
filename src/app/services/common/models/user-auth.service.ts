@@ -92,4 +92,25 @@ export class UserAuthService {
 
     callBackFunction();
   }
+
+  async microsoftLogin(user: SocialUser, callBackFunction?: () => void) {
+    debugger;
+    const observable: Observable<SocialUser | TokenResponse> = this.httpClientService.post<SocialUser | TokenResponse>({
+      controller: "auth",
+      action: "microsoft-login"
+    }, user);
+
+    const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
+
+    if (tokenResponse) {
+      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+
+      this.toastrService.notification(
+        "Microsoft login was successfull. Welcome! We hope you will enjoy spending time on eCommerce.",
+        "Signed In!",
+        ToastrMessageType.Success, ToastrPosition.TopRight)
+    }
+
+    callBackFunction();
+  }
 }
