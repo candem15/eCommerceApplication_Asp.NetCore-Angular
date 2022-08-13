@@ -2,9 +2,11 @@ import { SocialUser } from '@abacritt/angularx-social-login';
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { TokenResponse } from 'src/app/contracts/token/tokenResponse';
+import { TwitterRequestToken } from 'src/app/contracts/token/twitterRequestToken';
+import { TwitterResponseToken } from 'src/app/contracts/token/twitterResponseToken';
 import { LoginUser } from 'src/app/contracts/user/login-user';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../../ui/CustomToastr.service';
-import { HttpClientService } from '../http-client.service';
+import { HttpClientService, RequestParameters } from '../http-client.service';
 
 @Injectable({
   providedIn: 'root'
@@ -113,4 +115,32 @@ export class UserAuthService {
 
     callBackFunction();
   }
+
+  async twitterLogin(oauth: TwitterResponseToken, callBackFunction?: () => void) {
+    const observable: Observable<TwitterResponseToken | TokenResponse> = this.httpClientService.post<TwitterResponseToken | TokenResponse>({
+      controller: "auth",
+      action: "twitter-login"
+    }, oauth);
+
+    const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
+
+    if (tokenResponse) {
+      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+
+      this.toastrService.notification(
+        "Twitter login was successfull. Welcome! We hope you will enjoy spending time on eCommerce.",
+        "Signed In!",
+        ToastrMessageType.Success, ToastrPosition.TopRight)
+    }
+
+    callBackFunction();
+  }
+
+  getTwitterRequestToken(): Observable<TwitterRequestToken> {
+    return this.httpClientService.get<TwitterRequestToken>({
+      controller: "auth",
+      action: "get-twitter-request-token"
+    });
+  }
+
 }

@@ -4,6 +4,8 @@ import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
+import { TwitterRequestToken} from 'src/app/contracts/token/twitterRequestToken';
+import { TwitterResponseToken } from 'src/app/contracts/token/twitterResponseToken';
 import { CreateUser } from 'src/app/contracts/user/create_user';
 import { LoginUser } from 'src/app/contracts/user/login-user';
 import { User } from 'src/app/entities/user';
@@ -63,12 +65,26 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
           break;
       }
     });
+
+    //Twitter login
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      const token = this.activatedRoute.snapshot.queryParamMap.get('oauth_token');
+      const verifier = this.activatedRoute.snapshot.queryParamMap.get("oauth_verifier");
+      var oauthResponse: TwitterResponseToken = { oauthToken: token, oauthVerifier: verifier };
+      if (oauthResponse) {
+        this.userAuthService.twitterLogin(oauthResponse, () => {
+          this.authService.identityCheck();
+          this.hideSpinner(SpinnerType.BallPulse);
+        })
+      }
+    });
   }
 
   frmLogin: UntypedFormGroup;
   frmRegister: UntypedFormGroup;
   registerSubmitted: boolean = false;
   loginSubmitted: boolean = false;
+  private twitterRequestToken: Partial<TwitterRequestToken> = {};
 
   ngOnInit(): void {
     this.frmRegister = this.formBuilder.group({
@@ -147,6 +163,15 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
   }
 
   async googleLogin() {
+  }
+  async twitterLogin() {
+    this.userAuthService.getTwitterRequestToken()
+      .subscribe(response => this.twitterRequestToken = response,
+        error => console.log(error),
+        () => {
+          location.href = "https://api.twitter.com/oauth/authenticate?" + this.twitterRequestToken.oauth_token;
+        }
+      );
   }
 
   async microsoftLogin() {
