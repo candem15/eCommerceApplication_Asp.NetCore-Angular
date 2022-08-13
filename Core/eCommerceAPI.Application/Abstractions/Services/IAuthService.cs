@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eCommerceAPI.Application.Dtos.Twitter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace eCommerceAPI.Application.Abstractions.Services
         Task<Dtos.Token> GoogleLoginAsync(string idToken, string provider);
         Task<Dtos.Token> VkLoginAsync(string authToken, int id, string provider);
         Task<Dtos.Token> MicrosoftLoginAsync(string authToken, string provider);
-        Task TwitterLoginAsync();
+        Task<Dtos.Token> TwitterLoginAsync(string oauthToken,string oauthVerifier);
+        Task<RequestTokenResponse> GetTwitterRequestToken();
     }
 }

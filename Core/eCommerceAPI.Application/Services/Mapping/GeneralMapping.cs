@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using eCommerceAPI.Application.Dtos;
+using eCommerceAPI.Application.Dtos.Twitter;
 using eCommerceAPI.Application.Dtos.User;
 using eCommerceAPI.Application.Features.Commands.AppUser.CreateUser;
 using eCommerceAPI.Application.Features.Commands.AppUser.FacebookLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.GoogleLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.LoginUser;
 using eCommerceAPI.Application.Features.Commands.AppUser.MicrosoftLogin;
+using eCommerceAPI.Application.Features.Commands.AppUser.TwitterLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.VkLogin;
+using eCommerceAPI.Application.Features.Queries.Authentication.Twitter.GetRequestToken;
 using eCommerceAPI.Application.Features.Queries.Product.GetAllProducts;
 using eCommerceAPI.Application.Features.Queries.Product.GetProductById;
 using eCommerceAPI.Application.Features.Queries.ProductImage.GetProductImages;
@@ -51,7 +54,12 @@ namespace eCommerceAPI.Application.Services.Mapping
                  .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.Token.AccessToken))
                  .ForMember(dest => dest.Expiration, opt => opt.MapFrom(src => src.Token.Expiration))
                  .ReverseMap();
-
+            CreateMap<TwitterLoginCommandResponse, Token>()
+                 .ForMember(dest => dest.AccessToken, opt => opt.MapFrom(src => src.Token.AccessToken))
+                 .ForMember(dest => dest.Expiration, opt => opt.MapFrom(src => src.Token.Expiration))
+                 .ReverseMap();
+            CreateMap<RequestTokenResponse, GetRequestTokenQueryResponse>()
+                .ReverseMap();
         }
     }
 }

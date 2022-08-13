@@ -1,16 +1,19 @@
 ﻿using eCommerceAPI.Application.Abstractions.Services;
 using eCommerceAPI.Application.Abstractions.Token;
 using eCommerceAPI.Application.Dtos;
+using eCommerceAPI.Application.Dtos.Twitter;
 using eCommerceAPI.Application.Exceptions;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using OAuth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace eCommerceAPI.Persistence.Services
 {
@@ -175,9 +178,125 @@ namespace eCommerceAPI.Persistence.Services
             return token;
         }
 
-        public Task TwitterLoginAsync()
+        public async Task<Token> TwitterLoginAsync(string oauthToken, string oauthVerifier)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var accessTokenResponse = await _httpClient.GetStringAsync($"https://api.twitter.com/oauth/access_token?oauth_verifier={oauthVerifier}&oauth_token={oauthToken}");
+                var collection = HttpUtility.ParseQueryString(accessTokenResponse);
+                JObject responseObject = JObject.Parse(Newtonsoft.Json.JsonConvert.SerializeObject(collection.AllKeys.ToDictionary(y => y, y => collection[y])));
+
+                string consumerKey = _configuration["ExternalLogin:Twitter:ClientId"];
+                string consumerSecret = _configuration["ExternalLogin:Twitter:ClientSecret"];
+
+                _httpClient.DefaultRequestHeaders.Accept.Clear();
+
+                var oauthClient = new OAuthRequest
+                {
+                    Method = "GET",
+                    SignatureMethod = OAuthSignatureMethod.HmacSha1,
+                    ConsumerKey = consumerKey,
+                    ConsumerSecret = consumerSecret,
+                    RequestUrl = "https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true",
+                    Version = "1.0a",
+                    Realm = "twitter.com",
+                    Token = responseObject["oauth_token"].ToString(),
+                    TokenSecret = responseObject["oauth_token_secret"].ToString()
+                };
+                string auth = oauthClient.GetAuthorizationHeader();
+
+                _httpClient.DefaultRequestHeaders.Add("Authorization", auth);
+
+                JObject userInfoResponse = JObject.Parse(await _httpClient.GetStringAsync("https://api.twitter.com/1.1/account/verify_credentials.json?include_email=true"));
+
+                var info = new UserLoginInfo("TWITTER", (string)userInfoResponse.GetValue("id"), "TWITTER");
+
+                Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                bool result = user != null;
+
+                if (user == null)
+                {
+                    user = await _userManager.FindByEmailAsync(userInfoResponse["email"].ToString());
+                    if (user == null)
+                    {
+                        user = new()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Email = userInfoResponse["email"]?.ToString(),
+                            UserName = userInfoResponse["email"]?.ToString(),
+                            Name = userInfoResponse["name"]?.ToString()
+                        };
+                        var identityResult = await _userManager.CreateAsync(user);
+                        result = identityResult.Succeeded;
+                    }
+                }
+
+                if (result)
+                    await _userManager.AddLoginAsync(user, info);
+                else
+                    throw new ExternalLoginFailedException();
+                Token token = _tokenHandler.CreateAccessToken(10);
+                return token;
+            }
+            catch
+            {
+                throw new ExternalLoginFailedException();
+            }
+        }
+
+        public async Task<RequestTokenResponse> GetTwitterRequestToken()
+        {
+            var requestTokenResponse = new RequestTokenResponse();
+            var consumerKey = _configuration["ExternalLogin:Twitter:ClientId"];
+            var consumerSecret = _configuration["ExternalLogin:Twitter:ClientSecret"];
+            var callbackUrl = "http://localhost:4200/register";
+
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+
+            var oauthClient = new OAuthRequest
+            {
+                Method = "POST",
+                Type = OAuthRequestType.RequestToken,
+                SignatureMethod = OAuthSignatureMethod.HmacSha1,
+                ConsumerKey = consumerKey,
+                ConsumerSecret = consumerSecret,
+                RequestUrl = "https://api.twitter.com/oauth/request_token",
+                Version = "1.0a",
+                Realm = "twitter.com",
+                CallbackUrl = callbackUrl
+            };
+            string auth = oauthClient.GetAuthorizationHeader();
+
+            _httpClient.DefaultRequestHeaders.Add("Authorization", auth);
+
+            try
+            {
+                var content = new StringContent("", Encoding.UTF8, "application/json");
+
+                using (var response = await _httpClient.PostAsync(oauthClient.RequestUrl, content))
+                {
+                    response.EnsureSuccessStatusCode();
+
+                    var responseString = response.Content.ReadAsStringAsync()
+                                               .Result.Split("&");
+
+                    requestTokenResponse = new RequestTokenResponse
+                    {
+                        oauth_token = responseString[0],
+                        oauth_token_secret = responseString[1],
+                        oauth_callback_confirmed = responseString[2]
+                    };
+
+                }
+            }
+            catch
+            {
+
+                throw new ExternalLoginFailedException();
+            }
+
+            return requestTokenResponse;
         }
 
         public async Task<Token> VkLoginAsync(string authToken, int id, string provider)

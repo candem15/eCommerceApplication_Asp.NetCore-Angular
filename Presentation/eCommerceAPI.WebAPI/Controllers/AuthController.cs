@@ -2,7 +2,9 @@
 using eCommerceAPI.Application.Features.Commands.AppUser.GoogleLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.LoginUser;
 using eCommerceAPI.Application.Features.Commands.AppUser.MicrosoftLogin;
+using eCommerceAPI.Application.Features.Commands.AppUser.TwitterLogin;
 using eCommerceAPI.Application.Features.Commands.AppUser.VkLogin;
+using eCommerceAPI.Application.Features.Queries.Authentication.Twitter.GetRequestToken;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,6 +52,20 @@ namespace eCommerceAPI.WebAPI.Controllers
         public async Task<IActionResult> MicrosoftLogin(MicrosoftLoginCommandRequest microsoftLoginCommandRequest)
         {
             MicrosoftLoginCommandResponse response = await _mediator.Send(microsoftLoginCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("twitter-login")]
+        public async Task<IActionResult> TwitterLogin(TwitterLoginCommandRequest twitterLoginCommandRequest)
+        {
+            TwitterLoginCommandResponse response = await _mediator.Send(twitterLoginCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpGet("get-twitter-request-token")]
+        public async Task<IActionResult> GetTwitterRequestToken()
+        {
+            GetRequestTokenQueryResponse response = await _mediator.Send(new GetRequestTokenQueryRequest());
             return Ok(response);
         }
     }
