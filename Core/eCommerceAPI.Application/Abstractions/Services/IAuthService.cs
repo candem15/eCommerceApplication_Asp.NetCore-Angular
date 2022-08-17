@@ -1,4 +1,6 @@
 ﻿using eCommerceAPI.Application.Dtos.Twitter;
+using eCommerceAPI.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,9 @@ namespace eCommerceAPI.Application.Abstractions.Services
         Task<Dtos.Token> GoogleLoginAsync(string idToken, string provider);
         Task<Dtos.Token> VkLoginAsync(string authToken, int id, string provider);
         Task<Dtos.Token> MicrosoftLoginAsync(string authToken, string provider);
-        Task<Dtos.Token> TwitterLoginAsync(string oauthToken,string oauthVerifier);
-        Task<RequestTokenResponse> GetTwitterRequestToken();
+        Task<Dtos.Token> TwitterLoginAsync(string oauthToken, string oauthVerifier);
+        Task<Dtos.Token> RefreshTokenLoginAsync(string refreshToken);
+        Task<RequestTokenResponse> GetTwitterRequestTokenAsync();
+        Task<Dtos.Token> CreateExternalLoginTokenAsync(AppUser user, string mail, string name, UserLoginInfo info, int accessTokenLifeTime);
     }
 }

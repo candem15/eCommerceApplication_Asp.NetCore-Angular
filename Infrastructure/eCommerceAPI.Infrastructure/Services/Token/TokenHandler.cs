@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace eCommerceAPI.Infrastructure.Services.Token
@@ -13,7 +14,7 @@ namespace eCommerceAPI.Infrastructure.Services.Token
         {
             _configuration = configuration;
         }
-        public Application.Dtos.Token CreateAccessToken(int minute)
+        public Application.Dtos.Token CreateAccessToken(int seconds)
         {
             Application.Dtos.Token token = new();
 
@@ -24,7 +25,7 @@ namespace eCommerceAPI.Infrastructure.Services.Token
             SigningCredentials signingCredentials = new(securityKey, SecurityAlgorithms.HmacSha256);
 
             //Oluşturulacak token ayarlarını veriyoruz.
-            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
+            token.Expiration = DateTime.UtcNow.AddSeconds(seconds);
             JwtSecurityToken jwtSecurityToken = new JwtSecurityToken
                 (
                 audience: _configuration["Token:Audience"],
@@ -38,7 +39,16 @@ namespace eCommerceAPI.Infrastructure.Services.Token
             JwtSecurityTokenHandler tokenHandler = new();
             token.AccessToken = tokenHandler.WriteToken(jwtSecurityToken);
 
+            token.RefreshToken = CreateRefreshToken();
             return token;
+        }
+
+        public string CreateRefreshToken()
+        {
+            byte[] number = new byte[32];
+            using RandomNumberGenerator random = RandomNumberGenerator.Create();
+            random.GetBytes(number);
+            return Convert.ToBase64String(number);
         }
     }
 }

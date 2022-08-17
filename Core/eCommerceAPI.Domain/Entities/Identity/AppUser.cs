@@ -10,5 +10,7 @@ namespace eCommerceAPI.Domain.Entities.Identity
     public class AppUser : IdentityUser<string>
     {
         public string Name { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpirationTime { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace eCommerceAPI.Application.Features.Queries.Authentication.Twitter.GetRe
 
         public async Task<GetRequestTokenQueryResponse> Handle(GetRequestTokenQueryRequest request, CancellationToken cancellationToken)
         {
-            var token = await _authService.GetTwitterRequestToken();
+            var token = await _authService.GetTwitterRequestTokenAsync();
             return _mapper.Map<GetRequestTokenQueryResponse>(token);
         }
     }
