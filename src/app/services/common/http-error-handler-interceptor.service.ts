@@ -2,13 +2,14 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode } 
 import { Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../ui/CustomToastr.service';
+import { UserAuthService } from './models/user-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
-  constructor(private toastrService: CustomToastrService) { }
+  constructor(private toastrService: CustomToastrService, private userAuthService: UserAuthService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(catchError(error => {
@@ -18,6 +19,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
             "Unauthorized!",
             ToastrMessageType.Error,
             ToastrPosition.BottomRight);
+          this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken"));
           break;
         case HttpStatusCode.NotFound:
           this.toastrService.notification("Section you want to access is not available!",
