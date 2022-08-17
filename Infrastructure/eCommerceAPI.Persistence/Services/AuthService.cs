@@ -86,7 +86,7 @@ namespace eCommerceAPI.Persistence.Services
 
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAccessToken(10);
+                Token token = _tokenHandler.CreateAccessToken(10, user);
                 await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 5);
                 return token;
             }
@@ -223,7 +223,7 @@ namespace eCommerceAPI.Persistence.Services
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user != null && user?.RefreshTokenExpirationTime > DateTime.UtcNow)
             {
-                Token token = _tokenHandler.CreateAccessToken(15);
+                Token token = _tokenHandler.CreateAccessToken(15, user);
                 await _userService.UpdateRefreshTokenAsync(refreshToken, user, token.Expiration, 15);
                 return token;
             }
@@ -253,7 +253,7 @@ namespace eCommerceAPI.Persistence.Services
                 await _userManager.AddLoginAsync(user, info);
             else
                 throw new ExternalLoginFailedException();
-            Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+            Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
             await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 5);
             return token;
         }
