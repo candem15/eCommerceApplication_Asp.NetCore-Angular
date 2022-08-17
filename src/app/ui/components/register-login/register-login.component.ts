@@ -34,10 +34,10 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
     private router: Router,
     private socialAuthService: SocialAuthService) {
     super(spinner);
+
     socialAuthService.authState.subscribe(async (user: SocialUser) => {
       console.log(user)
       this.showSpinner(SpinnerType.BallPulse)
-
       switch (user.provider) {
         case "GOOGLE":
           await this.userAuthService.googleLogin(user, () => {
@@ -72,7 +72,7 @@ export class RegisterLoginComponent extends BaseComponent implements OnInit {
       const token = this.activatedRoute.snapshot.queryParamMap.get('oauth_token');
       const verifier = this.activatedRoute.snapshot.queryParamMap.get("oauth_verifier");
       var oauthResponse: TwitterResponseToken = { oauthToken: token, oauthVerifier: verifier };
-      if (oauthResponse) {
+      if (oauthResponse.oauthToken != null && oauthResponse.oauthVerifier != null) {
         this.userAuthService.twitterLogin(oauthResponse, () => {
           this.authService.identityCheck();
           this.hideSpinner(SpinnerType.BallPulse);
