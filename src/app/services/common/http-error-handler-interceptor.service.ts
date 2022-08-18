@@ -19,7 +19,11 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
             "Unauthorized!",
             ToastrMessageType.Error,
             ToastrPosition.BottomRight);
+<<<<<<< HEAD
           this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken")).then(data => { });
+=======
+          this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken"));
+>>>>>>> 66f47dfcc7237cbee899c92a207e182c33af52b8
           break;
         case HttpStatusCode.NotFound:
           this.toastrService.notification("Section you want to access is not available!",
