@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using eCommerceAPI.Application.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace eCommerceAPI.Application.Features.Queries.Product.GetAllProducts
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQueryRequest, GetAllProductsQueryResponse>
     {
         private readonly IProductReadRepository _productReadRepository;
+        private readonly IProductImageFileReadRepository _productImageFileReadRepository;
         private readonly IMapper _mapper;
-        public GetAllProductsQueryHandler(IProductReadRepository productReadRepository, IMapper mapper)
+        public GetAllProductsQueryHandler(IProductReadRepository productReadRepository, IMapper mapper, IProductImageFileReadRepository productImageFileReadRepository)
         {
             _productReadRepository = productReadRepository;
             _mapper = mapper;
+            _productImageFileReadRepository = productImageFileReadRepository;
         }
         public async Task<GetAllProductsQueryResponse> Handle(GetAllProductsQueryRequest request, CancellationToken cancellationToken)
         {
@@ -28,7 +31,9 @@ namespace eCommerceAPI.Application.Features.Queries.Product.GetAllProducts
                 p.Stock,
                 p.Price,
                 p.CreatedDate,
-                p.UpdatedDate
+                p.UpdatedDate,
+                p.ProductImageFiles,
+                ShowcaseImagePath = _productImageFileReadRepository.Table.Include(x => x.Products).SelectMany(x => x.Products, (pif, pro) => new { pif, pro }).FirstOrDefault(x => x.pro.Id == p.Id && x.pif.Showcase == true).pif.Path
             }).ToList();
 
             return new()
