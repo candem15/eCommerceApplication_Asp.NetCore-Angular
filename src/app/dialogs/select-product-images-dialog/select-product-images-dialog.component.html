@@ -3,9 +3,14 @@
   <app-file-upload [options]="options"></app-file-upload>
   <div class="allImages">
     <mat-card class="product-images-card" *ngFor="let image of productImages|async;index as i" #cardElement>
+      <mat-card-actions class="showcase-image">
+        <input type="radio" class="btn-check" name="btnradio" id="{{image.id}}" autocomplete="off"
+          (click)="changeShowcaseImage(image.id)" [attr.checked]="image.showcase?'checked':null">
+        <label class="btn-sm btn-outline-success" for="{{image.id}}">Showcase</label>
+      </mat-card-actions>
       <mat-card-header></mat-card-header>
       <img mat-card-image [title]="image.fileName" [src]="baseUrl+image.path" [alt]="image.fileName">
-      <mat-card-actions class="buttons">
+      <mat-card-actions class="button">
         <button title="Delete" style="color: rgb(255, 0, 0);" mat-icon-button #cardIndex [id]="i"
           (click)="deleteImage(image.id,i)">
           <mat-icon>delete</mat-icon>

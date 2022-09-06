@@ -77,7 +77,7 @@ export class ProductService {
   async editProduct(product: EditProduct, successCallBack?: () => void, errorCallBack?: (errorMessage: string) => void) {
     this.httpClientService.put({
       controller: "products",
-      action:"EditProduct"
+      action: "EditProduct"
     }, product)
       .subscribe(result => {
         successCallBack();
@@ -91,5 +91,15 @@ export class ProductService {
         });
         errorCallBack(message);
       });
-    }
+  }
+
+  async changeShowcaseImage(imageId: string, productId: string, successCallBack?: () => void) {
+    const changeShowcaseImageObservable: Observable<any> = this.httpClientService.get({
+      controller: "products",
+      action: "ChangeShowcaseImage",
+      queryString: `imageId=${imageId}&productId=${productId}`
+    });
+    successCallBack();
+    return await firstValueFrom(changeShowcaseImageObservable);
+  }
 }

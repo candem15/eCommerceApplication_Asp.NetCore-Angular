@@ -1,7 +1,9 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Inject, Input, OnChanges, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { SpinnerType } from 'src/app/base/base.component';
 import { ListProductImage } from 'src/app/contracts/product/list-product-image';
 import { AlertifyService, MessageType, Position } from 'src/app/services/admin/alertify.service';
 import { FileUploadOptions } from 'src/app/services/common/file-upload/file-upload.component';
@@ -24,7 +26,8 @@ export class SelectProductImagesDialogComponent extends BaseDialog<SelectProduct
     @Inject(MAT_DIALOG_DATA) public data: ProductImagesDialogState | string,
     private productService: ProductService,
     private alertify: AlertifyService,
-    private dialogService: DialogService) {
+    private dialogService: DialogService,
+    private spinner: NgxSpinnerService) {
     super(dialogRef)
   }
 
@@ -58,6 +61,16 @@ export class SelectProductImagesDialogComponent extends BaseDialog<SelectProduct
         });
       }
     });
+  }
+
+  async changeShowcaseImage(imageId: string) {
+    this.spinner.show(SpinnerType.BallPulse)
+    this.productService.changeShowcaseImage(imageId,
+      this.data as string,
+      () => {
+        this.spinner.hide(SpinnerType.BallPulse)
+        this.alertify.notification("Showcase image changed successfully!", MessageType.Success, Position.TopRight)
+      })
   }
 
   @Output() options: Partial<FileUploadOptions> = {
