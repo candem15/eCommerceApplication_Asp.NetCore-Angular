@@ -12,5 +12,6 @@ namespace eCommerceAPI.Domain.Entities.Identity
         public string Name { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpirationTime { get; set; }
+        public ICollection<Basket> Baskets { get; set; }
     }
 }
