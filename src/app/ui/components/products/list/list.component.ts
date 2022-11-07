@@ -1,23 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { BaseComponent, SpinnerType } from 'src/app/base/base.component';
+import { Create_Basket_Item } from 'src/app/contracts/basket/create_basket_item';
 import { ListProducts } from 'src/app/contracts/product/list-products';
+import { BasketService } from 'src/app/services/common/models/basket.service';
 import { ProductService } from 'src/app/services/common/models/product.service';
+import { CustomToastrService, ToastrMessageType, ToastrPosition } from 'src/app/services/ui/CustomToastr.service';
 
 @Component({
   selector: 'app-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
 })
-export class ListComponent implements OnInit {
+export class ListComponent extends BaseComponent implements OnInit {
 
-  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute) { }
+  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private basketService: BasketService, spinner: NgxSpinnerService, private customToastrService: CustomToastrService) {
+    super(spinner)
+  }
 
   currentPageNo: number;
   products: ListProducts[];
   totalProductsCount: number;
   totalPageCount: number;
   pageSize: number = 2;
-  baseUrl : string ="http://127.0.0.1:8887//";
+  baseUrl: string = "http://127.0.0.1:8887//";
   pageList: number[] = [];
 
   async ngOnInit() {
@@ -47,6 +54,19 @@ export class ListComponent implements OnInit {
         for (let i = this.currentPageNo - 3; i < this.currentPageNo + 3; i++)
           this.pageList.push(i);
     })
+  }
+
+  async addToBasket(product: ListProducts) {
+    this.showSpinner(SpinnerType.BallClipRotatePulse);
+    let _basketItem: Create_Basket_Item = new Create_Basket_Item();
+    _basketItem.productId = product.id;
+    _basketItem.quantity = 1;
+    await this.basketService.add(_basketItem);
+    this.hideSpinner(SpinnerType.BallClipRotatePulse);
+    this.customToastrService.notification("Product added to cart.", "Success!",
+      ToastrMessageType.Success,
+      ToastrPosition.TopRight
+    );
   }
 
 }

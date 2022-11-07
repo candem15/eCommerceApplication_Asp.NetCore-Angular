@@ -13,12 +13,14 @@ import { RegisterLoginComponent } from './ui/components/register-login/register-
 import { FacebookLoginProvider, GoogleLoginProvider, MicrosoftLoginProvider, SocialAuthServiceConfig, SocialLoginModule, VKLoginProvider } from '@abacritt/angularx-social-login';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorHandlerInterceptorService } from './services/common/http-error-handler-interceptor.service';
+import { DynamicLoadComponentDirective } from './directives/common/dynamic-load-component.directive';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterLoginComponent
+    RegisterLoginComponent,
+    DynamicLoadComponentDirective
   ],
   imports: [
     BrowserModule,

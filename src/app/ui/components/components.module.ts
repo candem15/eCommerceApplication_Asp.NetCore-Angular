@@ -11,6 +11,9 @@ import { BasketsModule } from './baskets/baskets.module';
     ProductsModule,
     HomeModule,
     BasketsModule
+  ],
+  exports: [
+    BasketsModule
   ]
 })
 export class ComponentsModule { }

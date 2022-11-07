@@ -1,6 +1,9 @@
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { catchError, Observable, of } from 'rxjs';
+import { SpinnerType } from 'src/app/base/base.component';
 import { CustomToastrService, ToastrMessageType, ToastrPosition } from '../ui/CustomToastr.service';
 import { UserAuthService } from './models/user-auth.service';
 
@@ -9,17 +12,27 @@ import { UserAuthService } from './models/user-auth.service';
 })
 export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
 
-  constructor(private toastrService: CustomToastrService, private userAuthService: UserAuthService) { }
+  constructor(private toastrService: CustomToastrService, private userAuthService: UserAuthService, private router: Router, private spinner: NgxSpinnerService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(catchError(error => {
       switch (error.status) {
         case HttpStatusCode.Unauthorized:
-          this.toastrService.notification("Authorization required!",
-            "Unauthorized!",
-            ToastrMessageType.Error,
-            ToastrPosition.BottomRight);
-          this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken")).then(data => { });
+          this.userAuthService.refreshTokenLogin(localStorage.getItem("refreshToken"), (state) => {
+            if (!state) {
+              const url = this.router.url;
+              if (url == "/products")
+                this.toastrService.notification("Product can't added to your cart.", "Please login first!",
+                  ToastrMessageType.Warning,
+                  ToastrPosition.TopRight
+                );
+              else
+                this.toastrService.notification("You don't have permission to this.", "Unauthorized!",
+                  ToastrMessageType.Warning,
+                  ToastrPosition.BottomFullWidth
+                );
+            }
+          }).then(data => { });
           break;
         case HttpStatusCode.NotFound:
           this.toastrService.notification("Section you want to access is not available!",
@@ -40,6 +53,7 @@ export class HttpErrorHandlerInterceptorService implements HttpInterceptor {
             ToastrPosition.BottomRight);
           break;
       }
+      this.spinner.hide(SpinnerType.BallPulse);
       return of(error);
     }))
   }

@@ -16,9 +16,6 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" routerLink="products">Products</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" routerLink="baskets">Basket</a>
-            </li>
             <!-- <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -41,6 +38,9 @@
           <li class="nav-item"><button class="btn btn-outline-primary" routerLink="admin" type="submit"
               *ngIf="authService.isAuthenticated">Admin</button></li>
         </ul>
+        <div class="d-flex">
+          <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#basketModal" (click)="loadComponent()" type="submit">Basket</button>
+        </div>
       </div>
     </nav>
   </div>
@@ -56,3 +56,9 @@
 <ngx-spinner type="square-loader" size="default" name="square-loader"></ngx-spinner>
 <ngx-spinner type="ball-clip-rotate-pulse" size="default" name="ball-clip-rotate-pulse"></ngx-spinner>
 <ngx-spinner type="ball-pulse" size="default" name="ball-pulse"></ngx-spinner>
+
+<div class="modal fade" id="basketModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <ng-template appDynamicLoadComponent></ng-template>
+  </div>
+</div>

@@ -140,20 +140,25 @@ export class UserAuthService {
     callBackFunction();
   }
 
-  async refreshTokenLogin(refreshToken: string, callBackFunction?: () => void) {
+  async refreshTokenLogin(refreshToken: string, callBackFunction?: (state) => void) {
     const observable: Observable<any | TokenResponse> = this.httpClientService.post<any | TokenResponse>({
       controller: "auth",
       action: "refresh-token-login"
     }, { refreshToken: refreshToken });
 
-    const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
+    try {
+      const tokenResponse: TokenResponse = await firstValueFrom(observable) as TokenResponse;
 
-    if (tokenResponse) {
-      localStorage.setItem("accessToken", tokenResponse.token.accessToken);
-      localStorage.setItem("refreshToken", tokenResponse.token.refreshToken);
+      if (tokenResponse) {
+        localStorage.setItem("accessToken", tokenResponse.token.accessToken);
+        localStorage.setItem("refreshToken", tokenResponse.token.refreshToken);
+      }
+
+      callBackFunction(tokenResponse ? true : false);
     }
-
-    callBackFunction();
+    catch {
+      callBackFunction(false);
+    }
   }
 
   getTwitterRequestToken(): Observable<TwitterRequestToken> {
