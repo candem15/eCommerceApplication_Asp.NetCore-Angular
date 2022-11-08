@@ -36,7 +36,7 @@ namespace eCommerceAPI.Infrastructure.Services.Token
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
                 signingCredentials: signingCredentials,
-                claims: new List<Claim>() { new(ClaimTypes.Name, user.Name) }
+                claims: new List<Claim>() { new(ClaimTypes.Name, user.UserName) }
                 );
 
             //Token oluşturucu sınıfından bir örnek alalım.

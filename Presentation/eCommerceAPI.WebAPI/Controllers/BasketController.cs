@@ -11,7 +11,7 @@ namespace eCommerceAPI.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class BasketController : ControllerBase
     {
         readonly IMediator _mediator;
@@ -22,7 +22,7 @@ namespace eCommerceAPI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBasketItems(GetBasketItemsQueryRequest getBasketItemsQueryRequest)
+        public async Task<IActionResult> GetBasketItems([FromQuery] GetBasketItemsQueryRequest getBasketItemsQueryRequest)
         {
             List<GetBasketItemsQueryResponse> response = await _mediator.Send(getBasketItemsQueryRequest);
             return Ok(response);

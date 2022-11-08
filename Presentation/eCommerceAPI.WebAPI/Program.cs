@@ -7,6 +7,7 @@ using eCommerceAPI.Infrastructure.Filters;
 using eCommerceAPI.Infrastructure.Services.Storage.Azure;
 using eCommerceAPI.Infrastructure.Services.Storage.Local;
 using eCommerceAPI.Persistence.Contexts;
+using eCommerceAPI.SignalR;
 using eCommerceAPI.WebAPI.Configurations.Serilog;
 using eCommerceAPI.WebAPI.Extensions;
 using FluentValidation.AspNetCore;
@@ -28,11 +29,12 @@ builder.Services.AddHttpContextAccessor();//Client'tan gelen request neticesinde
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddSignalRServices();
 //builder.Services.AddStorage<AzureStorage>();
 builder.Services.AddStorage<LocalStorage>();
 
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(policy =>
-    policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod()
+    policy.WithOrigins("https://localhost:4200", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 ));
 
 builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>())
@@ -126,5 +128,6 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
+app.MapHubs();
 
 app.Run();

@@ -72,7 +72,7 @@ namespace eCommerceAPI.Persistence.Services
 
             Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-            return await CreateExternalLoginTokenAsync(user, payload.Email, payload.Name, info, 900);
+            return await CreateExternalLoginTokenAsync(user, payload.Email, payload.Name, info, 10000);
         }
 
         public async Task<Token> LoginAsync(string usernameOrEmail, string password)
@@ -86,8 +86,8 @@ namespace eCommerceAPI.Persistence.Services
 
             if (result.Succeeded)
             {
-                Token token = _tokenHandler.CreateAccessToken(10, user);
-                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 900);
+                Token token = _tokenHandler.CreateAccessToken(10000, user);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 3000);
                 return token;
             }
 
@@ -105,7 +105,7 @@ namespace eCommerceAPI.Persistence.Services
             var info = new UserLoginInfo(provider, (string)userInfoResponse["id"], provider);
             Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-            return await CreateExternalLoginTokenAsync(user, userInfoResponse["userPrincipalName"].ToString(), userInfoResponse["displayName"].ToString(), info, 900);
+            return await CreateExternalLoginTokenAsync(user, userInfoResponse["userPrincipalName"].ToString(), userInfoResponse["displayName"].ToString(), info, 10000);
         }
 
         public async Task<Token> TwitterLoginAsync(string oauthToken, string oauthVerifier)
@@ -143,7 +143,7 @@ namespace eCommerceAPI.Persistence.Services
 
                 Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-                return await CreateExternalLoginTokenAsync(user, userInfoResponse["email"].ToString(), userInfoResponse["name"].ToString(), info, 900);
+                return await CreateExternalLoginTokenAsync(user, userInfoResponse["email"].ToString(), userInfoResponse["name"].ToString(), info, 10000);
             }
             catch
             {
@@ -215,7 +215,7 @@ namespace eCommerceAPI.Persistence.Services
 
             Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
-            return await CreateExternalLoginTokenAsync(user, $"{id}@ecommerce.com", infoResponse["first_name"].ToString() + " " + infoResponse["last_name"], info, 900);
+            return await CreateExternalLoginTokenAsync(user, $"{id}@ecommerce.com", infoResponse["first_name"].ToString() + " " + infoResponse["last_name"], info, 10000);
         }
 
         public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
@@ -224,7 +224,7 @@ namespace eCommerceAPI.Persistence.Services
             if (user != null && user?.RefreshTokenExpirationTime > DateTime.UtcNow)
             {
                 Token token = _tokenHandler.CreateAccessToken(15, user);
-                await _userService.UpdateRefreshTokenAsync(refreshToken, user, token.Expiration, 900);
+                await _userService.UpdateRefreshTokenAsync(refreshToken, user, token.Expiration, 10000);
                 return token;
             }
             throw new NotFoundUserException();
@@ -254,7 +254,7 @@ namespace eCommerceAPI.Persistence.Services
             else
                 throw new ExternalLoginFailedException();
             Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
-            await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 300);
+            await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 3000);
             return token;
         }
     }
