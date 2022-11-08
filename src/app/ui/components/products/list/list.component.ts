@@ -57,6 +57,7 @@ export class ListComponent extends BaseComponent implements OnInit {
   }
 
   async addToBasket(product: ListProducts) {
+    debugger;
     this.showSpinner(SpinnerType.BallClipRotatePulse);
     let _basketItem: Create_Basket_Item = new Create_Basket_Item();
     _basketItem.productId = product.id;
